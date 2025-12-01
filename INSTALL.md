@@ -72,7 +72,7 @@ npx prisma migrate dev
 
 # Create a superuser (optional, for initial setup)
 # npm run createsuperuser
-node prisma/createsu.js nairlak1 ln@mail.utoronto.ca Test1234
+node prisma/createsu.js nairlak1 ln@mail.utoronto.ca Test1234#
 ```
 
 ### 5. Seed the Database

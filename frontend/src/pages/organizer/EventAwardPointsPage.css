@@ -1,0 +1,263 @@
+/* EventAwardPointsPage.css */
+/* Organizer award-points view with same card layout. */
+
+.award-page {
+  min-height: calc(100vh - 64px);
+  padding: 3rem 1.5rem;
+  background: #f4f5f7;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.award-card {
+  width: 100%;
+  max-width: 840px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+  padding: 2.5rem 2.25rem 2.75rem;
+  color: #1f2933;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+}
+
+.award-card--loading {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+/* Back link */
+
+.award-back {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.award-back:hover {
+  text-decoration: underline;
+}
+
+/* Header */
+
+.award-header {
+  margin-bottom: 1.75rem;
+}
+
+.award-title {
+  margin: 0 0 0.35rem;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #111827;
+}
+
+.award-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+/* Alerts */
+
+.award-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.award-alert--error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.award-alert--success {
+  background: #ecfdf3;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+/* Sections */
+
+.award-section {
+  margin-top: 1.5rem;
+}
+
+.award-section:first-of-type {
+  margin-top: 0;
+}
+
+.award-section-title {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Info */
+
+.award-section--info {
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.award-field {
+  margin: 0.2rem 0;
+  font-size: 0.92rem;
+  color: #111827;
+}
+
+.award-label {
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.award-help {
+  margin: 0.4rem 0 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* Guests list */
+
+.award-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+}
+
+.award-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+}
+
+.award-list-item:last-child {
+  border-bottom: none;
+}
+
+.award-empty {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+/* Inline forms */
+
+.award-inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.award-inline-form input {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.88rem;
+}
+
+/* Award groups */
+
+.award-award-group {
+  margin-top: 1rem;
+}
+
+.award-subheading {
+  margin: 0 0 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Buttons */
+
+.award-button {
+  border-radius: 999px;
+  padding: 0.55rem 1.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease,
+    color 0.15s ease, transform 0.04s ease;
+}
+
+.award-button--primary {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.award-button--primary:hover:not(:disabled) {
+  background: #1d4ed8;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+}
+
+.award-button--secondary {
+  background: #111827;
+  color: #ffffff;
+  border-color: #111827;
+}
+
+.award-button--secondary:hover:not(:disabled) {
+  background: #020617;
+}
+
+.award-button--ghost {
+  background: #ffffff;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.award-button--ghost:hover:not(:disabled) {
+  background: #f9fafb;
+}
+
+.award-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .award-page {
+    padding: 2rem 1rem;
+  }
+
+  .award-card {
+    padding: 1.75rem 1.5rem 2rem;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .award-title {
+    font-size: 1.6rem;
+  }
+
+  .award-list-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .award-inline-form {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

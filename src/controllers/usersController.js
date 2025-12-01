@@ -739,6 +739,7 @@ async function listMyTransactions(req, res) {
       relatedId: t.relatedId,
       promotionIds: t.promotions.map((p) => p.promotionId),
       remark: t.remark,
+      createdAt: t.createdAt,
       createdBy: t.createdBy ? t.createdBy.utorid : null,
     }));
 

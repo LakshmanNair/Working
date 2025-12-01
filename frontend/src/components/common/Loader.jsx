@@ -1,10 +1,12 @@
+import React from 'react';
+import '../../App.css';
+
 const Loader = () => {
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
-      <div>Loading...</div>
+    <div className="loader-container">
+      <div className="spinner"></div>
     </div>
   );
 };
 
 export default Loader;
-

@@ -1,0 +1,341 @@
+/* ManagerEventDetailPage.css */
+/* Manager event detail page, styled to match EventDetailPage. */
+
+.manager-event-detail-page {
+  min-height: calc(100vh - 64px);
+  padding: 3rem 1.5rem;
+  background: #f4f5f7;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.manager-event-detail-card {
+  width: 100%;
+  max-width: 900px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+  padding: 2.5rem 2.25rem 2.75rem;
+  color: #1f2933;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+}
+
+.manager-event-detail-card--loading {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+/* Back */
+
+.manager-event-detail-back {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.manager-event-detail-back:hover {
+  text-decoration: underline;
+}
+
+/* Header */
+
+.manager-event-detail-header {
+  margin-bottom: 1.75rem;
+}
+
+.manager-event-detail-title {
+  margin: 0 0 0.35rem;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #111827;
+}
+
+.manager-event-detail-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+/* Alerts */
+
+.manager-event-detail-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.manager-event-detail-alert--error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.manager-event-detail-alert--success {
+  background: #ecfdf3;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+/* Sections */
+
+.manager-event-detail-section {
+  margin-top: 1.5rem;
+}
+
+.manager-event-detail-section:first-of-type {
+  margin-top: 0;
+}
+
+.manager-event-detail-section-title {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Overview info */
+
+.manager-event-detail-section--info {
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.manager-event-detail-field {
+  margin: 0.2rem 0;
+  font-size: 0.92rem;
+  color: #111827;
+}
+
+.manager-event-detail-label {
+  font-weight: 600;
+  color: #4b5563;
+}
+
+/* Form */
+
+.manager-event-detail-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.manager-event-detail-form-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.manager-event-detail-field--form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.manager-event-detail-field--form label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.manager-event-detail-field--form input,
+.manager-event-detail-field--form textarea,
+.manager-event-detail-field--form select {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  color: #111827;
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.manager-event-detail-field--form textarea {
+  resize: vertical;
+}
+
+.manager-event-detail-field--form input:focus,
+.manager-event-detail-field--form textarea:focus,
+.manager-event-detail-field--form select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.35);
+  background: #f9fafb;
+}
+
+/* Inline checkbox field */
+
+.manager-event-detail-field--inline {
+  font-size: 0.9rem;
+  color: #111827;
+}
+
+.manager-event-detail-field--inline label {
+  cursor: pointer;
+}
+
+.manager-event-detail-field--inline input[type='checkbox'] {
+  margin-right: 0.35rem;
+}
+
+/* Help text */
+
+.manager-event-detail-help {
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* Actions */
+
+.manager-event-detail-actions {
+  margin-top: 0.25rem;
+}
+
+.manager-event-detail-button {
+  border-radius: 999px;
+  padding: 0.55rem 1.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease,
+    color 0.15s ease, transform 0.04s ease;
+}
+
+.manager-event-detail-button--primary {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.manager-event-detail-button--primary:hover:not(:disabled) {
+  background: #1d4ed8;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+}
+
+.manager-event-detail-button--secondary {
+  background: #111827;
+  color: #ffffff;
+  border-color: #111827;
+}
+
+.manager-event-detail-button--secondary:hover:not(:disabled) {
+  background: #020617;
+}
+
+.manager-event-detail-button--ghost {
+  background: #ffffff;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.manager-event-detail-button--ghost:hover:not(:disabled) {
+  background: #f9fafb;
+}
+
+.manager-event-detail-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* Lists */
+
+.manager-event-detail-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+}
+
+.manager-event-detail-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+}
+
+.manager-event-detail-list-item:last-child {
+  border-bottom: none;
+}
+
+.manager-event-detail-empty {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+/* Inline mini forms */
+
+.manager-event-detail-inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.manager-event-detail-inline-form input {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.88rem;
+}
+
+/* Award groups */
+
+.manager-event-detail-award-group {
+  margin-top: 1rem;
+}
+
+.manager-event-detail-subheading {
+  margin: 0 0 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .manager-event-detail-page {
+    padding: 2rem 1rem;
+  }
+
+  .manager-event-detail-card {
+    padding: 1.75rem 1.5rem 2rem;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .manager-event-detail-title {
+    font-size: 1.6rem;
+  }
+
+  .manager-event-detail-form-row {
+    flex-direction: column;
+  }
+
+  .manager-event-detail-list-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .manager-event-detail-inline-form {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

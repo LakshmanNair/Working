@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/layout/Navbar';
 import RequireAuth from './components/common/RequireAuth';
@@ -20,12 +20,44 @@ import CreateTransactionPage from './pages/cashier/CreateTransactionPage';
 import ManagerDashboardPage from './pages/manager/ManagerDashboardPage';
 import TransactionsListPage from './pages/manager/TransactionsListPage';
 import PromotionsListPage from './pages/manager/PromotionsListPage';
+import UsersListPage from './pages/manager/UsersListPage';
+import UserDetailPage from './pages/manager/UserDetailPage';
+import ManagerEventsListPage from './pages/manager/ManagerEventsListPage';
+import ManagerEventDetailPage from './pages/manager/ManagerEventDetailPage';
 
-// Placeholder for promotion pages (to be created)
-const PromotionsPage = () => <div>Promotions Page (Regular View)</div>;
-const PromotionCreateEditPage = () => <div>Create/Edit Promotion</div>;
+// Profile pages
+import ProfilePage from './pages/profile/ProfilePage';
+
+// Event pages
+import EventsListPage from './pages/events/EventsListPage';
+import EventDetailPage from './pages/events/EventDetailPage';
+
+// Organizer pages
+import MyEventsPage from './pages/organizer/MyEventsPage';
+import EventAwardPointsPage from './pages/organizer/EventAwardPointsPage';
+
+
+// Promotion pages
+import PromotionCreateEditPage from './pages/manager/PromotionCreateEditPage';
+import PromotionsPage from './pages/regular/PromotionsPage';
+
+// Placeholder for other pages
 const TransactionDetailPage = () => <div>Transaction Detail</div>;
 const ProcessRedemptionPage = () => <div>Process Redemption</div>;
+
+// Layout Component to handle Navbar visibility
+const Layout = ({ children }) => {
+  const location = useLocation();
+  // Hide Navbar only on the login page
+  const showNavbar = location.pathname !== '/login';
+
+  return (
+    <div style={{ minHeight: '100vh', backgroundColor: showNavbar ? '#f5f5f5' : '#242424' }}>
+      {showNavbar && <Navbar />}
+      {children}
+    </div>
+  );
+};
 
 const AppRoutes = () => {
   const { loading } = useAuth();
@@ -72,7 +104,31 @@ const AppRoutes = () => {
           </RequireAuth>
         }
       />
-      
+      <Route
+        path="/me/profile"
+        element={
+          <RequireAuth>
+            <ProfilePage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/events"
+        element={
+          <RequireAuth>
+            <EventsListPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/events/:eventId"
+        element={
+          <RequireAuth>
+            <EventDetailPage />
+          </RequireAuth>
+        }
+      />
+
       {/* Cashier routes */}
       <Route
         path="/cashier/transactions/new"
@@ -140,6 +196,56 @@ const AppRoutes = () => {
           </RequireAuth>
         }
       />
+      <Route
+        path="/manager/users"
+        element={
+          <RequireAuth requiredRole="manager">
+            <UsersListPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/manager/users/:userId"
+        element={
+          <RequireAuth requiredRole="manager">
+            <UserDetailPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/manager/events"
+        element={
+          <RequireAuth requiredRole="manager">
+            <ManagerEventsListPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/manager/events/:eventId"
+        element={
+          <RequireAuth requiredRole="manager">
+            <ManagerEventDetailPage />
+          </RequireAuth>
+        }
+      />
+
+      {/* Organizer routes */}
+      <Route
+        path="/organizer/events"
+        element={
+          <RequireAuth requiredRole="manager">
+            <MyEventsPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/organizer/events/:eventId/award"
+        element={
+          <RequireAuth requiredRole="manager">
+            <EventAwardPointsPage />
+          </RequireAuth>
+        }
+      />
       
       {/* Public promotions page */}
       <Route
@@ -168,10 +274,9 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
-          <Navbar />
+        <Layout>
           <AppRoutes />
-        </div>
+        </Layout>
       </Router>
     </AuthProvider>
   );

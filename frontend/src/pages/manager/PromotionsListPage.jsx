@@ -19,7 +19,8 @@ const PromotionsListPage = () => {
     setError(null);
     try {
       const data = await listPromotions();
-      setPromotions(data);
+      // FIX: Access data.results because the API returns { count, results }
+      setPromotions(data.results || []);
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to fetch promotions');
     } finally {
@@ -141,4 +142,3 @@ const PromotionsListPage = () => {
 };
 
 export default PromotionsListPage;
-

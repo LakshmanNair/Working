@@ -1,22 +1,19 @@
+import React from 'react';
+import '../../App.css';
+
 const ErrorMessage = ({ message, onDismiss }) => {
+  if (!message) return null;
+
   return (
-    <div
-      style={{
-        padding: '1rem',
-        margin: '1rem 0',
-        backgroundColor: '#fee',
-        border: '1px solid #fcc',
-        borderRadius: '4px',
-        color: '#c33',
-      }}
-    >
-      {message}
+    <div className="error-alert" role="alert">
+      <span>{message}</span>
       {onDismiss && (
-        <button
-          onClick={onDismiss}
-          style={{ float: 'right', background: 'none', border: 'none', cursor: 'pointer' }}
+        <button 
+          onClick={onDismiss} 
+          className="error-close"
+          aria-label="Dismiss error"
         >
-          ×
+          &times;
         </button>
       )}
     </div>
@@ -24,4 +21,3 @@ const ErrorMessage = ({ message, onDismiss }) => {
 };
 
 export default ErrorMessage;
-

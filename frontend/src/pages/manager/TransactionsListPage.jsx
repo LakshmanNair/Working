@@ -26,10 +26,11 @@ const TransactionsListPage = () => {
         ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== '')),
       };
       const data = await listTransactions(params);
+      // FIX: Access data.results because the API returns { count, results }
       if (page === 1) {
-        setTransactions(data);
+        setTransactions(data.results);
       } else {
-        setTransactions((prev) => [...prev, ...data]);
+        setTransactions((prev) => [...prev, ...data.results]);
       }
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to fetch transactions');
@@ -106,7 +107,7 @@ const TransactionsListPage = () => {
               <tr key={tx.id}>
                 <td style={{ padding: '0.75rem', border: '1px solid #ddd' }}>{tx.id}</td>
                 <td style={{ padding: '0.75rem', border: '1px solid #ddd' }}>{tx.type}</td>
-                <td style={{ padding: '0.75rem', border: '1px solid #ddd' }}>{tx.user?.utorid || 'N/A'}</td>
+                <td style={{ padding: '0.75rem', border: '1px solid #ddd' }}>{tx.utorid || tx.user?.utorid || 'N/A'}</td>
                 <td style={{ padding: '0.75rem', border: '1px solid #ddd' }}>{tx.amount} pts</td>
                 <td style={{ padding: '0.75rem', border: '1px solid #ddd' }}>
                   {new Date(tx.createdAt).toLocaleString()}
@@ -150,4 +151,3 @@ const TransactionsListPage = () => {
 };
 
 export default TransactionsListPage;
-

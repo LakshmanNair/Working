@@ -12,7 +12,8 @@ const MyTransactionsPage = () => {
 
   useEffect(() => {
     fetchTransactions();
-  }, [page, filters]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, filters.type, filters.minAmount, filters.maxAmount]);
 
   const fetchTransactions = async () => {
     setLoading(true);
@@ -23,14 +24,26 @@ const MyTransactionsPage = () => {
         limit: 20,
         ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== '')),
       };
-      const data = await listMyTransactions(params);
+      console.log('Fetching transactions with params:', params);
+      const response = await listMyTransactions(params);
+      console.log('Received response:', response);
+      
+      // Backend returns { count, results: [...] }
+      const transactionsArray = Array.isArray(response) 
+        ? response 
+        : (Array.isArray(response?.results) ? response.results : []);
+      
+      console.log('Processed transactions array:', transactionsArray);
+      
       if (page === 1) {
-        setTransactions(data);
+        setTransactions(transactionsArray);
       } else {
-        setTransactions((prev) => [...prev, ...data]);
+        setTransactions((prev) => [...prev, ...transactionsArray]);
       }
     } catch (err) {
+      console.error('Error fetching transactions:', err);
       setError(err.response?.data?.error || 'Failed to fetch transactions');
+      setTransactions([]); // Reset on error
     } finally {
       setLoading(false);
     }
@@ -47,7 +60,13 @@ const MyTransactionsPage = () => {
     return colors[type] || '#6c757d';
   };
 
-  if (loading && transactions.length === 0) return <Loader />;
+  if (loading && transactions.length === 0) {
+    return (
+      <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
@@ -97,6 +116,12 @@ const MyTransactionsPage = () => {
 
       {error && <ErrorMessage message={error} />}
 
+      {transactions.length === 0 && !loading && !error && (
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
+          <p>No transactions found.</p>
+        </div>
+      )}
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {transactions.map((tx) => (
           <div
@@ -126,7 +151,7 @@ const MyTransactionsPage = () => {
                 {tx.spent && <span style={{ marginLeft: '1rem' }}>Spent: ${tx.spent}</span>}
               </div>
               <div style={{ color: '#666', fontSize: '0.875rem' }}>
-                {new Date(tx.createdAt).toLocaleString()}
+                {tx.createdAt ? new Date(tx.createdAt).toLocaleString() : 'N/A'}
               </div>
             </div>
             {tx.remark && (

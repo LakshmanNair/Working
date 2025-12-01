@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import ErrorMessage from '../../components/common/ErrorMessage';
+import '../../App.css'; // Ensure CSS is imported
 
 const LoginPage = () => {
   const [utorid, setUtorid] = useState('');
@@ -19,7 +20,6 @@ const LoginPage = () => {
     const result = await login(utorid, password);
     
     if (result.success) {
-      // Wait a moment for user to be fetched, then redirect
       setTimeout(() => {
         const storedUser = localStorage.getItem('user');
         const user = storedUser ? JSON.parse(storedUser) : null;
@@ -41,56 +41,57 @@ const LoginPage = () => {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '2rem auto', padding: '2rem' }}>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        {error && <ErrorMessage message={error} onDismiss={() => setError('')} />}
-        
-        <div style={{ marginBottom: '1rem' }}>
-          <label>
-            UTORid:
+    <div className="login-container">
+      <div className="login-card">
+        <div className="login-header">
+          <h1>CSSU Rewards</h1>
+          <p className="login-subtitle">Sign in to your account</p>
+        </div>
+
+        {error && (
+          <div className="login-error-wrapper">
+            <ErrorMessage message={error} onDismiss={() => setError('')} />
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="form-group">
+            <label htmlFor="utorid">UTORid</label>
             <input
+              id="utorid"
               type="text"
               value={utorid}
               onChange={(e) => setUtorid(e.target.value)}
+              placeholder="e.g. shkvore2"
               required
-              style={{ width: '100%', padding: '0.5rem', marginTop: '0.5rem' }}
+              disabled={loading}
             />
-          </label>
-        </div>
-        
-        <div style={{ marginBottom: '1rem' }}>
-          <label>
-            Password:
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
             <input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
               required
-              style={{ width: '100%', padding: '0.5rem', marginTop: '0.5rem' }}
+              disabled={loading}
             />
-          </label>
-        </div>
-        
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-          }}
-        >
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
+          </div>
+          
+          <button
+            type="submit"
+            disabled={loading}
+            className="login-button"
+          >
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
 
 export default LoginPage;
-

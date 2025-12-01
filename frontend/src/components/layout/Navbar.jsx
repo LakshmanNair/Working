@@ -53,6 +53,8 @@ const Navbar = () => {
           {(role === 'manager' || role === 'superuser') && (
             <>
               <Link to="/manager/dashboard" style={{ textDecoration: 'none', color: '#333' }}>Dashboard</Link>
+              <Link to="/manager/users" style={{ textDecoration: 'none', color: '#333' }}>Users</Link>
+              <Link to="/manager/events" style={{ textDecoration: 'none', color: '#333' }}>Events</Link>
               <Link to="/manager/transactions" style={{ textDecoration: 'none', color: '#333' }}>Transactions</Link>
               <Link to="/manager/promotions" style={{ textDecoration: 'none', color: '#333' }}>Promotions</Link>
             </>
@@ -61,7 +63,7 @@ const Navbar = () => {
         
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <span style={{ color: '#666' }}>
-            {user?.utorid} ({user?.points || 0} pts)
+            <Link to="/me/profile">{user?.utorid} ({user?.points || 0} pts)</Link>
           </span>
           <button
             onClick={handleLogout}

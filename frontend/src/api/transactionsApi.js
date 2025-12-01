@@ -26,7 +26,9 @@ export const createRedemption = async (data) => {
 
 // Process redemption (cashier)
 export const processRedemption = async (transactionId) => {
-  const response = await api.patch(`/transactions/${transactionId}/processed`);
+  const response = await api.patch(`/transactions/${transactionId}/processed`, {
+    processed: true,
+  });
   return response.data;
 };
 
@@ -55,9 +57,11 @@ export const toggleSuspicious = async (transactionId, suspicious) => {
 };
 
 // Transfer points (regular user)
+// Note: userId is the recipient's user ID (not UTORid)
 export const transferPoints = async (userId, amount, remark = '') => {
   const response = await api.post(`/users/${userId}/transactions`, {
-    amount: -Math.abs(amount), // Negative for sender
+    type: 'transfer',
+    amount: Math.abs(amount), // Positive amount (API handles negative for sender)
     remark,
   });
   return response.data;
