@@ -12,14 +12,18 @@ import MyTransactionsPage from './pages/regular/MyTransactionsPage';
 import TransferPointsPage from './pages/regular/TransferPointsPage';
 import RedemptionRequestPage from './pages/regular/RedemptionRequestPage';
 import RedemptionQRCodePage from './pages/regular/RedemptionQRCodePage';
+import PromotionsPage from './pages/regular/PromotionsPage'; // Public view
 
 // Cashier pages
 import CreateTransactionPage from './pages/cashier/CreateTransactionPage';
+import ProcessRedemptionPage from './pages/cashier/ProcessRedemptionPage'; // Fixed import
 
 // Manager pages
 import ManagerDashboardPage from './pages/manager/ManagerDashboardPage';
 import TransactionsListPage from './pages/manager/TransactionsListPage';
+import TransactionDetailPage from './pages/manager/TransactionDetailPage'; // Fixed import
 import PromotionsListPage from './pages/manager/PromotionsListPage';
+import PromotionCreateEditPage from './pages/manager/PromotionCreateEditPage';
 import UsersListPage from './pages/manager/UsersListPage';
 import UserDetailPage from './pages/manager/UserDetailPage';
 import ManagerEventsListPage from './pages/manager/ManagerEventsListPage';
@@ -35,15 +39,6 @@ import EventDetailPage from './pages/events/EventDetailPage';
 // Organizer pages
 import MyEventsPage from './pages/organizer/MyEventsPage';
 import EventAwardPointsPage from './pages/organizer/EventAwardPointsPage';
-
-
-// Promotion pages
-import PromotionCreateEditPage from './pages/manager/PromotionCreateEditPage';
-import PromotionsPage from './pages/regular/PromotionsPage';
-
-// Placeholder for other pages
-const TransactionDetailPage = () => <div>Transaction Detail</div>;
-const ProcessRedemptionPage = () => <div>Process Redemption</div>;
 
 // Layout Component to handle Navbar visibility
 const Layout = ({ children }) => {

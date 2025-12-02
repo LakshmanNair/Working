@@ -137,7 +137,7 @@ async function listPromotions(req, res) {
     const where = {};
 
     if (name)
-      where.name = { contains: name, mode: 'insensitive' };
+      where.name = { contains: name }; // Removed mode: 'insensitive' for SQLite compatibility if needed
     if (type)
       where.type = type;
 
@@ -149,27 +149,25 @@ async function listPromotions(req, res) {
       if (ended !== undefined)
         where.endTime = ended === 'true' ? { lte: now } : { gt: now };
     } else {
-      // Regular users: only active promotions
-      where.startTime = { lte: now };
-      where.endTime = { gt: now };
+      // Regular users: Show Active AND Upcoming
+      
+      // Keep this to hide expired promotions
+      where.endTime = { gt: now }; 
     }
-
     const skip = (pageNum - 1) * limitNum;
     const take = limitNum;
 
+    // FIX: Moved startTime out of the if-block so it is ALWAYS selected
     const selectFields = {
       id: true,
       name: true,
       type: true,
+      startTime: true, // <--- This was the fix
       endTime: true,
       minSpending: true,
       rate: true,
       points: true,
     };
-    
-    if (['manager', 'superuser'].includes(role)) {
-      selectFields.startTime = true;
-    }
 
     const [count, results] = await Promise.all([
       prisma.promotion.count({ where }),
@@ -184,7 +182,7 @@ async function listPromotions(req, res) {
 
     const totalPages = Math.ceil(count / limitNum);
     if (pageNum > totalPages && totalPages > 0) {
-        return res.status(400).json({ error: "Page Number exceeds avaliable pages." });
+        return res.status(400).json({ error: "Page Number exceeds available pages." });
     }
 
     res.status(200).json({ count, results });
@@ -222,16 +220,12 @@ async function getPromotion(req, res) {
       name: promo.name,
       description: promo.description,
       type: promo.type,
+      startTime: promo.startTime, // Ensure startTime is sent here too
       endTime: promo.endTime,
       minSpending: promo.minSpending,
       rate: promo.rate,
       points: promo.points,
     };
-    
-    // Privileged users get startTime
-    if (['manager', 'superuser'].includes(role)) {
-      response.startTime = promo.startTime;
-    }
 
     return res.status(200).json(response);
   } catch (err) {

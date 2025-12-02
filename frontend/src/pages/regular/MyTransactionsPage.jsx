@@ -5,6 +5,7 @@ import ErrorMessage from '../../components/common/ErrorMessage';
 
 const MyTransactionsPage = () => {
   const [transactions, setTransactions] = useState([]);
+  const [totalCount, setTotalCount] = useState(0); // New state to track total items
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
@@ -24,17 +25,21 @@ const MyTransactionsPage = () => {
         limit: 20,
         ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== '')),
       };
-      console.log('Fetching transactions with params:', params);
+      
       const response = await listMyTransactions(params);
-      console.log('Received response:', response);
       
       // Backend returns { count, results: [...] }
       const transactionsArray = Array.isArray(response) 
         ? response 
         : (Array.isArray(response?.results) ? response.results : []);
       
-      console.log('Processed transactions array:', transactionsArray);
-      
+      // Update total count from response to control Load More button
+      if (response && typeof response.count === 'number') {
+        setTotalCount(response.count);
+      } else if (page === 1) {
+        setTotalCount(transactionsArray.length); 
+      }
+
       if (page === 1) {
         setTransactions(transactionsArray);
       } else {
@@ -43,7 +48,7 @@ const MyTransactionsPage = () => {
     } catch (err) {
       console.error('Error fetching transactions:', err);
       setError(err.response?.data?.error || 'Failed to fetch transactions');
-      setTransactions([]); // Reset on error
+      if (page === 1) setTransactions([]); 
     } finally {
       setLoading(false);
     }
@@ -60,7 +65,8 @@ const MyTransactionsPage = () => {
     return colors[type] || '#6c757d';
   };
 
-  if (loading && transactions.length === 0) {
+  // Only show full loader on initial load
+  if (loading && page === 1 && transactions.length === 0) {
     return (
       <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
         <Loader />
@@ -76,7 +82,10 @@ const MyTransactionsPage = () => {
       <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
         <select
           value={filters.type}
-          onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+          onChange={(e) => {
+            setFilters({ ...filters, type: e.target.value });
+            setPage(1); // Reset to page 1 on filter change
+          }}
           style={{ padding: '0.5rem' }}
         >
           <option value="">All Types</option>
@@ -91,7 +100,10 @@ const MyTransactionsPage = () => {
           type="number"
           placeholder="Min Amount"
           value={filters.minAmount}
-          onChange={(e) => setFilters({ ...filters, minAmount: e.target.value })}
+          onChange={(e) => {
+            setFilters({ ...filters, minAmount: e.target.value });
+            setPage(1); // Reset to page 1
+          }}
           style={{ padding: '0.5rem' }}
         />
         
@@ -99,7 +111,10 @@ const MyTransactionsPage = () => {
           type="number"
           placeholder="Max Amount"
           value={filters.maxAmount}
-          onChange={(e) => setFilters({ ...filters, maxAmount: e.target.value })}
+          onChange={(e) => {
+            setFilters({ ...filters, maxAmount: e.target.value });
+            setPage(1); // Reset to page 1
+          }}
           style={{ padding: '0.5rem' }}
         />
         
@@ -161,7 +176,8 @@ const MyTransactionsPage = () => {
         ))}
       </div>
 
-      {transactions.length > 0 && (
+      {/* Conditionally render Load More button based on total count */}
+      {transactions.length < totalCount && (
         <button
           onClick={() => setPage(page + 1)}
           disabled={loading}
@@ -183,4 +199,3 @@ const MyTransactionsPage = () => {
 };
 
 export default MyTransactionsPage;
-

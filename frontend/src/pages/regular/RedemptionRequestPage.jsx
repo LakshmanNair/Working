@@ -31,11 +31,11 @@ const RedemptionRequestPage = () => {
     setLoading(true);
     try {
       const result = await createRedemption({
+        type: 'redemption', 
         amount: -Math.abs(points),
         remark,
       });
-      setTransactionId(result.id);
-    } catch (err) {
+      setTransactionId(result.id);    } catch (err) {
       setError(err.response?.data?.error || 'Redemption request failed');
     } finally {
       setLoading(false);

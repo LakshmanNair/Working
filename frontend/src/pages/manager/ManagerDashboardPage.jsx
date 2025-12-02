@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { getSummary, getTransactionsPerDay } from '../../api/analyticsApi';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { getSummary, getTransactionsPerDay, getPromotionUsage } from '../../api/analyticsApi';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import Loader from '../../components/common/Loader';
 import ErrorMessage from '../../components/common/ErrorMessage';
 
 const ManagerDashboardPage = () => {
   const [summary, setSummary] = useState(null);
   const [chartData, setChartData] = useState([]);
+  const [promotionUsage, setPromotionUsage] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [days, setDays] = useState(30);
@@ -19,12 +20,14 @@ const ManagerDashboardPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const [summaryData, chartDataResponse] = await Promise.all([
+      const [summaryData, chartDataResponse, promotionUsageData] = await Promise.all([
         getSummary(),
         getTransactionsPerDay(days),
+        getPromotionUsage(),
       ]);
       setSummary(summaryData);
       setChartData(chartDataResponse);
+      setPromotionUsage(promotionUsageData);
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to fetch analytics');
     } finally {
@@ -124,7 +127,115 @@ const ManagerDashboardPage = () => {
             </LineChart>
           </ResponsiveContainer>
         </div>
+        
       </div>
+
+      {/* Promotion Usage Statistics */}
+      <div style={{ marginBottom: '2rem' }}>
+        <h2>Promotion Usage Statistics</h2>
+        <div style={{ 
+          backgroundColor: '#fff', 
+          padding: '1rem', 
+          borderRadius: '8px',
+          overflowX: 'auto'
+        }}>
+          {promotionUsage.length === 0 ? (
+            <p style={{ color: '#666', textAlign: 'center', padding: '2rem' }}>
+              No promotions found
+            </p>
+          ) : (
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid #ddd', backgroundColor: '#f9f9f9' }}>
+                  <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: 'bold' }}>Promotion Name</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: 'bold' }}>Type</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'center', fontWeight: 'bold' }}>Total Redemptions</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'center', fontWeight: 'bold' }}>Total Uses</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'center', fontWeight: 'bold' }}>Unique Users</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'center', fontWeight: 'bold' }}>Status</th>
+                  <th style={{ padding: '0.75rem', textAlign: 'left', fontWeight: 'bold' }}>Date Range</th>
+                </tr>
+              </thead>
+              <tbody>
+                {promotionUsage.map((promo) => (
+                  <tr 
+                    key={promo.id} 
+                    style={{ 
+                      borderBottom: '1px solid #eee'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  >
+                    <td style={{ padding: '0.75rem' }}>{promo.name}</td>
+                    <td style={{ padding: '0.75rem' }}>
+                      <span style={{
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '4px',
+                        fontSize: '0.875rem',
+                        backgroundColor: promo.type === 'automatic' ? '#e7f3ff' : '#fff7e7',
+                        color: promo.type === 'automatic' ? '#0066cc' : '#cc6600'
+                      }}>
+                        {promo.type === 'automatic' ? 'Automatic' : 'One-Time'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center' }}>
+                      {promo.totalRedemptions}
+                    </td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center', fontWeight: 'bold' }}>
+                      {promo.totalUses}
+                    </td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center', fontWeight: 'bold' }}>
+                      {promo.uniqueUsers}
+                    </td>
+                    <td style={{ padding: '0.75rem', textAlign: 'center' }}>
+                      <span style={{
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '4px',
+                        fontSize: '0.875rem',
+                        backgroundColor: promo.isActive ? '#e7ffe7' : '#ffe7e7',
+                        color: promo.isActive ? '#006600' : '#cc0000',
+                        fontWeight: 'bold'
+                      }}>
+                        {promo.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '0.75rem', fontSize: '0.875rem', color: '#666' }}>
+                      {new Date(promo.startTime).toLocaleDateString()} - {new Date(promo.endTime).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+
+      {/* Promotion Usage Chart */}
+      {promotionUsage.length > 0 && (
+        <div style={{ marginBottom: '2rem' }}>
+          <h2>Promotion Usage Comparison</h2>
+          <div style={{ width: '100%', height: '400px', backgroundColor: '#fff', padding: '1rem', borderRadius: '8px' }}>
+            <ResponsiveContainer>
+              <BarChart data={promotionUsage}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="name" 
+                  angle={-45} 
+                  textAnchor="end" 
+                  height={100}
+                  interval={0}
+                />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="totalUses" fill="#8884d8" name="Total Uses" />
+                <Bar dataKey="uniqueUsers" fill="#82ca9d" name="Unique Users" />
+                <Bar dataKey="totalRedemptions" fill="#ffc658" name="Total Redemptions" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
