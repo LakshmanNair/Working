@@ -1,29 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createPurchase, createAdjustment } from '../../api/transactionsApi';
+import { createPurchase } from '../../api/transactionsApi';
 import { listPromotions } from '../../api/promotionsApi';
 import ErrorMessage from '../../components/common/ErrorMessage';
-import '../../App.css'; // Ensure CSS is imported
+import '../../App.css'; 
 
 const CreateTransactionPage = () => {
-  const [type, setType] = useState('purchase');
+  // Cashiers only create purchases
   const [utorid, setUtorid] = useState('');
   const [spent, setSpent] = useState('');
-  const [amount, setAmount] = useState('');
-  const [relatedId, setRelatedId] = useState('');
   const [promotionIds, setPromotionIds] = useState([]);
   const [remark, setRemark] = useState('');
+  
   const [loading, setLoading] = useState(false);
   const [promoLoading, setPromoLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [promotions, setPromotions] = useState([]);
+  
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (type === 'purchase') {
-      fetchPromotions();
-    }
-  }, [type]);
+    fetchPromotions();
+  }, []);
 
   const fetchPromotions = async () => {
     setPromoLoading(true);
@@ -31,6 +30,7 @@ const CreateTransactionPage = () => {
       const response = await listPromotions();
       const allPromotions = Array.isArray(response) ? response : (response?.results || []);
       
+      // Filter for active promotions only
       const now = new Date();
       setPromotions(allPromotions.filter(p => {
         const start = p.startTime ? new Date(p.startTime) : null;
@@ -53,30 +53,34 @@ const CreateTransactionPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setLoading(true);
 
     try {
-      if (type === 'purchase') {
-        await createPurchase({
-          utorid,
-          spent: parseFloat(spent),
-          promotionIds: promotionIds.length > 0 ? promotionIds : null,
-          remark,
-        });
-      } else {
-        await createAdjustment({
-          utorid,
-          amount: parseInt(amount),
-          relatedId: relatedId ? parseInt(relatedId) : null,
-          remark,
-        });
+      const spentFloat = parseFloat(spent);
+      if (isNaN(spentFloat) || spentFloat <= 0) {
+        throw new Error('Please enter a valid amount greater than 0');
       }
+
+      await createPurchase({
+        utorid: utorid.trim(),
+        spent: spentFloat,
+        promotionIds: promotionIds.length > 0 ? promotionIds : null,
+        remark: remark.trim(),
+      });
       
-      // Navigate immediately, don't use alert in modern apps
-      navigate('/cashier/transactions/new', { replace: true });
-      // Ideally, show a Toast notification here via a context
+      setSuccess('Transaction created successfully!');
+      
+      // Reset form
+      setUtorid('');
+      setSpent('');
+      setPromotionIds([]);
+      setRemark('');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
     } catch (err) {
-      setError(err.response?.data?.error || 'Transaction creation failed');
+      setError(err.response?.data?.error || err.message || 'Transaction creation failed');
     } finally {
       setLoading(false);
     }
@@ -85,128 +89,103 @@ const CreateTransactionPage = () => {
   return (
     <div className="page-container">
       <div className="page-header">
-        <h1>Process Transaction</h1>
-      </div>
-      
-      {/* Modern Toggle Switch for Type */}
-      <div className="type-selector">
-        <div 
-          className={`type-option ${type === 'purchase' ? 'active' : ''}`}
-          onClick={() => setType('purchase')}
-        >
-          Purchase
-        </div>
-        <div 
-          className={`type-option ${type === 'adjustment' ? 'active' : ''}`}
-          onClick={() => setType('adjustment')}
-        >
-          Adjustment / Refund
-        </div>
+        <h1>New Purchase</h1>
+        <p style={{ color: '#6c757d', marginTop: '0.5rem' }}>
+          Record a customer purchase to award points.
+        </p>
       </div>
 
       {error && <ErrorMessage message={error} onDismiss={() => setError('')} />}
+      
+      {success && (
+        <div className="info-box" style={{ backgroundColor: '#d4edda', borderColor: '#c3e6cb' }}>
+          <div className="info-box-title" style={{ color: '#155724' }}>Success</div>
+          {success}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="form-card">
-        <div className="form-row">
-          <div className="form-group">
-            <label className="field-label">Customer UTORid <span className="required">*</span></label>
-            <input
-              type="text"
-              value={utorid}
-              onChange={(e) => setUtorid(e.target.value)}
-              required
-              className="input-field"
-              placeholder="e.g., smithj"
-            />
+        <div className="form-section">
+          <div className="form-row">
+            <div className="form-group">
+              <label className="field-label">Customer UTORid <span className="required">*</span></label>
+              <input
+                type="text"
+                value={utorid}
+                onChange={(e) => setUtorid(e.target.value)}
+                required
+                className="input-field"
+                placeholder="e.g. smithj"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="field-label">Amount Spent ($) <span className="required">*</span></label>
+              <input
+                type="number"
+                step="0.01"
+                value={spent}
+                onChange={(e) => setSpent(e.target.value)}
+                required
+                min="0.01"
+                className="input-field"
+                placeholder="0.00"
+              />
+            </div>
           </div>
         </div>
 
-        {type === 'purchase' ? (
-          <>
-            <div className="form-row">
-              <div className="form-group">
-                <label className="field-label">Amount Spent ($) <span className="required">*</span></label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={spent}
-                  onChange={(e) => setSpent(e.target.value)}
-                  required
-                  min="0.01"
-                  className="input-field"
-                  placeholder="0.00"
-                />
-              </div>
+        <div className="form-section">
+          <label className="field-label">Apply Promotions</label>
+          <div className="field-help" style={{ marginBottom: '1rem' }}>
+            Select any active promotions that apply to this purchase.
+          </div>
+          
+          {promoLoading ? (
+            <div style={{ padding: '1rem', textAlign: 'center', color: '#666' }}>Loading promotions...</div>
+          ) : promotions.length > 0 ? (
+            <div className="promotions-grid">
+              {promotions.map((promo) => {
+                const isSelected = promotionIds.includes(promo.id);
+                return (
+                  <div 
+                    key={promo.id} 
+                    className={`promo-checkbox-card ${isSelected ? 'selected' : ''}`}
+                    onClick={() => togglePromotion(promo.id)}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={() => {}} 
+                      style={{ cursor: 'pointer', width: '18px', height: '18px', marginTop: '3px' }}
+                    />
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ fontWeight: '600', fontSize: '0.9rem', color: '#333' }}>{promo.name}</span>
+                      {promo.minSpending && (
+                        <span style={{ fontSize: '0.75rem', color: '#666' }}>
+                          Min Spend: ${promo.minSpending}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
+          ) : (
+            <div className="info-box">No active promotions available at this time.</div>
+          )}
+        </div>
 
-            <div className="form-section">
-              <label className="field-label">Active Promotions</label>
-              {promoLoading ? (
-                <div className="field-help">Loading promotions...</div>
-              ) : promotions.length > 0 ? (
-                <div className="promotions-grid">
-                  {promotions.map((promo) => {
-                    const isSelected = promotionIds.includes(promo.id);
-                    return (
-                      <div 
-                        key={promo.id} 
-                        className={`promo-checkbox-card ${isSelected ? 'selected' : ''}`}
-                        onClick={() => togglePromotion(promo.id)}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => {}} // Handled by div click
-                          style={{ cursor: 'pointer' }}
-                        />
-                        <span style={{ fontSize: '0.9rem' }}>{promo.name}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="field-help">No active promotions available at this time.</div>
-              )}
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="form-row">
-              <div className="form-group">
-                <label className="field-label">Points Adjustment <span className="required">*</span></label>
-                <input
-                  type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  required
-                  className="input-field"
-                  placeholder="e.g., -500 for refund, 100 for credit"
-                />
-                <div className="field-help">Negative values deduct points, positive values add points.</div>
-              </div>
-
-              <div className="form-group">
-                <label className="field-label">Related Transaction ID</label>
-                <input
-                  type="number"
-                  value={relatedId}
-                  onChange={(e) => setRelatedId(e.target.value)}
-                  className="input-field"
-                  placeholder="Optional"
-                />
-              </div>
-            </div>
-          </>
-        )}
-
-        <div className="form-row full-width">
+        <div className="form-section">
           <div className="form-group">
-            <label className="field-label">Remarks</label>
+            <label className="field-label">Remarks (Optional)</label>
             <textarea
               value={remark}
               onChange={(e) => setRemark(e.target.value)}
               className="textarea-field"
-              placeholder="Add any internal notes about this transaction..."
+              placeholder="Add internal notes..."
+              rows="2"
+              style={{ minHeight: '80px' }}
             />
           </div>
         </div>
@@ -216,9 +195,9 @@ const CreateTransactionPage = () => {
             type="submit"
             disabled={loading}
             className="btn btn-primary"
-            style={{ width: '100%' }} // Full width for this page looks better
+            style={{ minWidth: '200px' }}
           >
-            {loading ? 'Processing...' : type === 'purchase' ? 'Complete Purchase' : 'Process Adjustment'}
+            {loading ? 'Processing...' : 'Complete Purchase'}
           </button>
         </div>
       </form>

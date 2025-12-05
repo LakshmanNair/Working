@@ -39,6 +39,8 @@ const Navbar = () => {
             <>
               <Link to="/me/transactions" style={{ textDecoration: 'none', color: '#333' }}>My Transactions</Link>
               <Link to="/me/transfer" style={{ textDecoration: 'none', color: '#333' }}>Transfer Points</Link>
+              <Link to="/me/events" style={{ textDecoration: 'none', color: '#333' }}>Events</Link>
+              <Link to="/organizer/events" style={{ textDecoration: 'none', color: '#333' }}>My Events</Link>
               <Link to="/me/redemption" style={{ textDecoration: 'none', color: '#333' }}>Redemption</Link>
               <Link to="/promotions" style={{ textDecoration: 'none', color: '#333' }}>Promotions</Link>
             </>
@@ -46,7 +48,8 @@ const Navbar = () => {
           
           {role === 'cashier' && (
             <>
-              <Link to="/cashier/transactions/new" style={{ textDecoration: 'none', color: '#333' }}>Create Transaction</Link>
+                <Link to="/cashier/transactions/new" style={{ textDecoration: 'none', color: '#333' }}>New Purchase</Link>
+                <Link to="/cashier/redemptions/process" style={{ textDecoration: 'none', color: '#333' }}>Process Redemption</Link>            
             </>
           )}
           
@@ -56,6 +59,7 @@ const Navbar = () => {
               <Link to="/manager/users" style={{ textDecoration: 'none', color: '#333' }}>Users</Link>
               <Link to="/manager/events" style={{ textDecoration: 'none', color: '#333' }}>Events</Link>
               <Link to="/manager/transactions" style={{ textDecoration: 'none', color: '#333' }}>Transactions</Link>
+              <Link to="/me/redemption" style={{ textDecoration: 'none', color: '#333' }}>Redemption</Link>
               <Link to="/manager/promotions" style={{ textDecoration: 'none', color: '#333' }}>Promotions</Link>
             </>
           )}
@@ -63,7 +67,9 @@ const Navbar = () => {
         
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <span style={{ color: '#666' }}>
-            <Link to="/me/profile">{user?.utorid} ({user?.points || 0} pts)</Link>
+            <Link to="/me/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
+              {user?.utorid} ({user?.points || 0} pts)
+            </Link>          
           </span>
           <button
             onClick={handleLogout}

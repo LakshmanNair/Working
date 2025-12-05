@@ -193,7 +193,7 @@ async function getEvent(req, res) {
   try {
     const role = req.auth?.role;
     const userId = req.auth?.userId;
-    const id = Number(req.params.eventId)
+    const id = Number(req.params.eventId);
     if (isNaN(id)) return res.status(404).json({ error: 'Event not found' });
 
     const event = await prisma.event.findUnique({
@@ -203,14 +203,19 @@ async function getEvent(req, res) {
         guests: { include: { user: true } },
       },
     });
+
     if (!event) return res.status(404).json({ error: 'Event not found' });
 
-    // Regular users can't see unpublished events
-    if (role === 'regular' && !event.published) {
+    // Is this user an organizer for this event?
+    const isOrganizer = event.organizers.some((o) => o.user.id === userId);
+
+    // Regular non-organizers can't see unpublished events
+    if (role === 'regular' && !isOrganizer && !event.published) {
       return res.status(404).json({ error: 'Event not found' });
     }
-    // Regular users see limited info
-    if (role === 'regular') {
+
+    // Regular non-organizer: limited info
+    if (role === 'regular' && !isOrganizer) {
       return res.json({
         id: event.id,
         name: event.name,
@@ -228,8 +233,8 @@ async function getEvent(req, res) {
       });
     }
 
-    // Manager or Organizer sees full details
-    res.json({
+    
+    return res.json({
       id: event.id,
       name: event.name,
       description: event.description,
@@ -836,29 +841,51 @@ async function eventRemoveGuest(req, res) {
     const role = requester?.role;
     const { eventId, userId } = req.params;
 
-    if (!['manager', 'superuser'].includes(role)) {
-      return res.status(403).json({ error: "Manager or higher required." });
+    const eventIdNum = Number(eventId);
+    const userIdNum = Number(userId);
+    if (!eventIdNum || !userIdNum) {
+      return res.status(400).json({ error: 'Invalid event or user ID' });
+    }
+
+    // Load event with organizers so we can check organizer rights
+    const event = await prisma.event.findUnique({
+      where: { id: eventIdNum },
+      include: { organizers: true },
+    });
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+
+    const isOrganizer = event.organizers.some(
+      (org) => org.userId === requester.userId
+    );
+
+    if (!isOrganizer && !['manager', 'superuser'].includes(role)) {
+      return res.status(403).json({
+        error: 'Manager, superuser, or organizer required.',
+      });
+    }
+
+    // block removing guests after the event ends
+    const now = req.requestDate;
+    if (new Date(event.endTime) < now) {
+      return res.status(410).json({ error: 'Event has already ended.' });
     }
 
     const guest = await prisma.eventGuest.findFirst({
-      where: { eventId: Number(eventId), userId: Number(userId) },
+      where: { eventId: eventIdNum, userId: userIdNum },
     });
-
     if (!guest) {
       return res.status(404).json({ error: 'Guest not found in event.' });
     }
 
-    await prisma.eventGuest.delete({
-      where: { id: guest.id },
-    });
-
+    await prisma.eventGuest.delete({ where: { id: guest.id } });
     return res.status(204).end();
-
   } catch (error) {
-      console.error("Error removing guest from event:", error);
-      return res.status(500).json({
-          error: "Internal server error while removing guest."
-      });
+    console.error('Error removing guest from event:', error);
+    return res.status(500).json({
+      error: 'Internal server error while removing guest.',
+    });
   }
 }
 // -------------------------------------------------------------

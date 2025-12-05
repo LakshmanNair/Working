@@ -32,6 +32,9 @@ async function main() {
     { utorid: 'student5', name: 'Student Five', email: 's5@mail.utoronto.ca', role: 'regular', verified: true, points: 300 },
     { utorid: 'student6', name: 'Student Six', email: 's6@mail.utoronto.ca', role: 'regular', verified: true, points: 450 },
     { utorid: 'student7', name: 'Student Seven', email: 's7@mail.utoronto.ca', role: 'regular', verified: true, points: 25 },
+    // create a superuser with unique utorid and email
+    { utorid: 'superus2', name: 'Super User 2', email: 'su2@mail.utoronto.ca', role: 'superuser', verified: true, points: 500 },
+
   ];
 
   for (const u of usersData) {

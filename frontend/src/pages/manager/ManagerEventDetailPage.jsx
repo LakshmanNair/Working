@@ -232,7 +232,7 @@ export default function ManagerEventDetailPage() {
       setError('');
       setSuccess('');
 
-      await removeGuestFromEvent(eventId, userId); // DELETE /events/:eventId/guests/:userId [attached_file:79][attached_file:86]
+      await removeGuestFromEvent(eventId, userId); // DELETE /events/:eventId/guests/:userId 
       setGuests((prev) => prev.filter((g) => g.id !== userId));
       setSuccess('Guest removed.');
     } catch (err) {
@@ -258,8 +258,7 @@ export default function ManagerEventDetailPage() {
         utorid: utorid.trim(),
         amount: amtNum,
         remark: '',
-      }); // POST /events/:eventId/transactions (event award) [attached_file:79][attached_file:86]
-
+      }); // POST /events/:eventId/transactions (event award) 
       setAwardSingle({ utorid: '', amount: '' });
       setSuccess('Points awarded to guest.');
       await loadEvent();
@@ -293,7 +292,7 @@ export default function ManagerEventDetailPage() {
       await awardPointsToAllGuests(eventId, {
         amount: amtNum,
         remark: '',
-      }); // POST /events/:eventId/transactions (award to all) [attached_file:79][attached_file:86]
+      }); // POST /events/:eventId/transactions (award to all) 
 
       setAwardAll({ amount: '' });
       setSuccess('Points awarded to all guests.');

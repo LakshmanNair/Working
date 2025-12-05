@@ -12,7 +12,7 @@ CREATE TABLE "User" (
     "verified" BOOLEAN NOT NULL DEFAULT false,
     "suspicious" BOOLEAN NOT NULL DEFAULT false,
     "avatarUrl" TEXT,
-    "passwordHash" TEXT NOT NULL
+    "passwordHash" TEXT
 );
 
 -- CreateTable

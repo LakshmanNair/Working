@@ -101,7 +101,7 @@ export default function EventDetailPage() {
         <button
           type="button"
           className="event-detail-back"
-          onClick={() => navigate('/events')}
+          onClick={() => navigate('/me/events')}
         >
           ← Back to Events
         </button>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getTransaction, processRedemption } from '../../api/transactionsApi';
 import ErrorMessage from '../../components/common/ErrorMessage';
-import Loader from '../../components/common/Loader';
+import '../../App.css';
 
 const ProcessRedemptionPage = () => {
   const [transactionId, setTransactionId] = useState('');
@@ -10,11 +10,14 @@ const ProcessRedemptionPage = () => {
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  
   const navigate = useNavigate();
 
   const handleLookup = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setTransaction(null);
     
     if (!transactionId) {
@@ -27,12 +30,12 @@ const ProcessRedemptionPage = () => {
       const data = await getTransaction(transactionId);
       
       if (data.type !== 'redemption') {
-        setError('This transaction is not a redemption request');
+        setError('This transaction is NOT a redemption request.');
         return;
       }
       
       if (data.processedBy) {
-        setError('This redemption has already been processed');
+        setError(`This request was already processed by a different User ID: ${data.processedBy}.`);
         return;
       }
       
@@ -45,7 +48,7 @@ const ProcessRedemptionPage = () => {
   };
 
   const handleProcess = async () => {
-    if (!window.confirm('Are you sure you want to process this redemption? This action cannot be undone.')) {
+    if (!window.confirm('Confirm redemption? This will deduct points from the user.')) {
       return;
     }
 
@@ -54,7 +57,7 @@ const ProcessRedemptionPage = () => {
     
     try {
       await processRedemption(transactionId);
-      alert('Redemption processed successfully!');
+      setSuccess('Redemption processed successfully!');
       setTransaction(null);
       setTransactionId('');
     } catch (err) {
@@ -65,120 +68,96 @@ const ProcessRedemptionPage = () => {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '2rem auto', padding: '2rem' }}>
-      <h1 style={{ marginBottom: '2rem', color: '#333' }}>Process Redemption Request</h1>
+    <div className="page-container">
+      <div className="page-header">
+        <h1>Process Redemption</h1>
+        <p style={{ color: '#6c757d', marginTop: '0.5rem' }}>
+          Scan or enter a Transaction ID to fulfill a redemption request.
+        </p>
+      </div>
 
-      <div style={{ backgroundColor: '#fff', padding: '2rem', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
-        <form onSubmit={handleLookup} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
-          <div style={{ flex: 1 }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: '#555' }}>
-              Transaction ID
-            </label>
+      {error && <ErrorMessage message={error} onDismiss={() => setError('')} />}
+      
+      {success && (
+        <div className="info-box" style={{ backgroundColor: '#d4edda', borderColor: '#c3e6cb' }}>
+          <div className="info-box-title" style={{ color: '#155724' }}>Success</div>
+          {success}
+        </div>
+      )}
+
+      {/* Lookup Section */}
+      <div className="form-card">
+        <form onSubmit={handleLookup} className="form-row" style={{ alignItems: 'flex-end', marginBottom: 0 }}>
+          <div className="form-group" style={{ flex: 1 }}>
+            <label className="field-label">Transaction ID</label>
             <input
               type="number"
               value={transactionId}
               onChange={(e) => setTransactionId(e.target.value)}
-              placeholder="Enter transaction ID"
+              placeholder="e.g. 45"
               required
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '1rem',
-              }}
+              className="input-field"
+              autoFocus
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: loading ? '#6c757d' : '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              fontSize: '1rem',
-              whiteSpace: 'nowrap',
-            }}
+            className="btn btn-primary"
+            style={{ marginBottom: '2px' }}
           >
-            {loading ? 'Loading...' : 'Lookup'}
+            {loading ? 'Searching...' : 'Lookup Request'}
           </button>
         </form>
       </div>
 
-      {error && <ErrorMessage message={error} onDismiss={() => setError('')} />}
-
+      {/* Result Section */}
       {transaction && (
-        <div style={{ backgroundColor: '#fff', padding: '2rem', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-          <h2 style={{ marginTop: 0, marginBottom: '1.5rem', color: '#333' }}>Redemption Request Details</h2>
-          
-          <div style={{ display: 'grid', gap: '1rem', marginBottom: '2rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-              <strong style={{ color: '#555' }}>Transaction ID:</strong>
-              <span style={{ color: '#333' }}>#{transaction.id}</span>
-            </div>
-            
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-              <strong style={{ color: '#555' }}>User:</strong>
-              <span style={{ color: '#333' }}>{transaction.user?.utorid || transaction.utorid || 'N/A'}</span>
-            </div>
-            
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-              <strong style={{ color: '#555' }}>Amount:</strong>
-              <span style={{ color: '#dc3545', fontSize: '1.25rem', fontWeight: 'bold' }}>
-                {Math.abs(transaction.amount)} points
-              </span>
-            </div>
-            
-            {transaction.remark && (
-              <div style={{ padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-                <strong style={{ color: '#555', display: 'block', marginBottom: '0.5rem' }}>Remark:</strong>
-                <span style={{ color: '#333' }}>{transaction.remark}</span>
+        <div className="form-card" style={{ borderLeft: '4px solid #28a745' }}>
+          <div className="form-section">
+            <h3 style={{ marginTop: 0, color: '#28a745' }}>Request Validated</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '1.5rem' }}>
+              <div>
+                <label className="field-label">User</label>
+                <div style={{ fontSize: '1.2rem', fontWeight: '500' }}>
+                  {transaction.user?.utorid || transaction.utorid || 'Unknown'}
+                </div>
               </div>
-            )}
-            
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-              <strong style={{ color: '#555' }}>Created At:</strong>
-              <span style={{ color: '#333' }}>
-                {new Date(transaction.createdAt).toLocaleString()}
-              </span>
+              <div>
+                <label className="field-label">Redemption Amount</label>
+                <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#dc3545' }}>
+                  {Math.abs(transaction.amount)} Points
+                </div>
+              </div>
+              <div>
+                <label className="field-label">Request Date</label>
+                <div>{new Date(transaction.createdAt).toLocaleString()}</div>
+              </div>
+              {transaction.remark && (
+                <div>
+                  <label className="field-label">User Remark</label>
+                  <div style={{ fontStyle: 'italic', color: '#666' }}>"{transaction.remark}"</div>
+                </div>
+              )}
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+          <div className="form-actions">
             <button
               onClick={() => {
                 setTransaction(null);
                 setTransactionId('');
-                setError('');
               }}
-              style={{
-                padding: '0.75rem 1.5rem',
-                backgroundColor: '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              }}
+              className="btn btn-secondary"
             >
               Cancel
             </button>
             <button
               onClick={handleProcess}
               disabled={processing}
-              style={{
-                padding: '0.75rem 1.5rem',
-                backgroundColor: processing ? '#6c757d' : '#28a745',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: processing ? 'not-allowed' : 'pointer',
-                fontSize: '1rem',
-              }}
+              className="btn btn-success" // Using success color for the final action
             >
-              {processing ? 'Processing...' : 'Process Redemption'}
+              {processing ? 'Processing...' : 'Approve & Deduct Points'}
             </button>
           </div>
         </div>
@@ -188,4 +167,3 @@ const ProcessRedemptionPage = () => {
 };
 
 export default ProcessRedemptionPage;
-

@@ -1,7 +1,8 @@
-/* EventsListPage.css */
-/* Minimal list view styled to match ProfilePage.css */
+/* TransactionsListPage.css */
+/* Manager transactions list styled to match UsersListPage. */
 
-.events-page {
+/* Page & card */
+.transactions-page {
   min-height: calc(100vh - 64px);
   padding: 3rem 1.5rem;
   background: #f4f5f7;
@@ -10,7 +11,7 @@
   align-items: flex-start;
 }
 
-.events-card {
+.transactions-card {
   width: 100%;
   max-width: 1100px;
   background: #ffffff;
@@ -23,12 +24,11 @@
 }
 
 /* Header */
-
-.events-header {
+.transactions-header {
   margin-bottom: 2rem;
 }
 
-.events-title {
+.transactions-title {
   font-size: 2rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -36,38 +36,36 @@
   margin: 0 0 0.35rem;
 }
 
-.events-subtitle {
+.transactions-subtitle {
   margin: 0;
   font-size: 0.95rem;
   color: #6b7280;
 }
 
 /* Alerts */
-
-.events-alert {
+.transactions-alert {
   padding: 0.75rem 1rem;
   border-radius: 8px;
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
 
-.events-alert--error {
+.transactions-alert--error {
   background: #fef2f2;
   color: #b91c1c;
   border: 1px solid #fecaca;
 }
 
 /* Sections */
-
-.events-section {
+.transactions-section {
   margin-top: 1.5rem;
 }
 
-.events-section:first-of-type {
+.transactions-section:first-of-type {
   margin-top: 0;
 }
 
-.events-section-title {
+.transactions-section-title {
   font-size: 1rem;
   font-weight: 600;
   color: #111827;
@@ -75,28 +73,39 @@
 }
 
 /* Filters */
-
-.events-filters {
+.transactions-filters {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.9rem 1rem;
   align-items: flex-end;
 }
 
-.events-filter-field {
+.transactions-filters-title {
+  margin-top: 2rem;   /* was 1.25rem */
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.transactions-filter-field {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
-.events-filter-field label {
+.transactions-filter-field--wide {
+  grid-column: span 2;
+}
+
+.transactions-filter-field label {
   font-size: 0.85rem;
   font-weight: 500;
   color: #4b5563;
 }
 
-.events-filter-field input,
-.events-filter-field select {
+.transactions-filter-field input,
+.transactions-filter-field select {
   border-radius: 8px;
   border: 1px solid #d1d5db;
   padding: 0.5rem 0.75rem;
@@ -107,27 +116,26 @@
     background-color 0.15s ease;
 }
 
-.events-filter-field input::placeholder {
+.transactions-filter-field input::placeholder {
   color: #9ca3af;
 }
 
-.events-filter-field input:focus,
-.events-filter-field select:focus {
+.transactions-filter-field input:focus,
+.transactions-filter-field select:focus {
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.35);
   background: #f9fafb;
 }
 
-.events-filter-actions {
+.transactions-filter-actions {
   display: flex;
   gap: 0.5rem;
   justify-content: flex-end;
 }
 
-/* Buttons */
-
-.events-button {
+/* Buttons (reuse look from users page) */
+.transactions-button {
   border-radius: 999px;
   padding: 0.5rem 1.25rem;
   font-size: 0.85rem;
@@ -138,104 +146,99 @@
     color 0.15s ease, transform 0.04s ease;
 }
 
-.events-button--primary {
+.transactions-button--primary {
   background: #2563eb;
   color: #ffffff;
   border-color: #2563eb;
 }
 
-.events-button--primary:hover:not(:disabled) {
+.transactions-button--primary:hover:not(:disabled) {
   background: #1d4ed8;
   box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
 }
 
-.events-button--ghost {
+.transactions-button--ghost {
   background: #ffffff;
   color: #374151;
   border-color: #d1d5db;
 }
 
-.events-button--ghost:hover:not(:disabled) {
+.transactions-button--ghost:hover:not(:disabled) {
   background: #f9fafb;
 }
 
-.events-button:disabled {
+.transactions-button:disabled {
   opacity: 0.6;
   cursor: default;
   box-shadow: none;
 }
 
-/* Results list */
-
-.events-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+/* Table */
+.transactions-table-wrapper {
   border-radius: 10px;
   border: 1px solid #e5e7eb;
   background: #f9fafb;
+  overflow-x: auto;
+  margin-top: 1rem;
 }
 
-.events-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.9rem 1rem;
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
 }
 
-.events-item + .events-item {
+.transactions-table thead {
+  background: #f3f4f6;
+}
+
+.transactions-table th,
+.transactions-table td {
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.transactions-table th {
+  font-weight: 600;
+  color: #4b5563;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.transactions-table td {
+  color: #111827;
   border-top: 1px solid #e5e7eb;
 }
 
-.events-item-main {
-  min-width: 0;
+.transactions-table tbody tr:nth-child(even) {
+  background: #f9fafb;
 }
 
-.events-item-title {
-  margin: 0 0 0.15rem;
-  font-size: 0.98rem;
-  font-weight: 600;
-  color: #111827;
+.transactions-table tbody tr:nth-child(odd) {
+  background: #ffffff;
 }
 
-.events-item-meta {
-  margin: 0;
-  font-size: 0.85rem;
-  color: #4b5563;
-}
-
-.events-item-meta--secondary {
-  margin-top: 0.15rem;
-  color: #6b7280;
-}
-
-.events-item-actions {
-  display: flex;
-  align-items: center;
-}
-
-.events-link {
+/* “View” link in Actions column */
+.transactions-link {
   font-size: 0.85rem;
   font-weight: 600;
   color: #2563eb;
   text-decoration: none;
 }
 
-.events-link:hover {
+.transactions-link:hover {
   text-decoration: underline;
 }
 
 /* Empty state */
-
-.events-empty {
+.transactions-empty {
   padding: 1rem 0.25rem;
   font-size: 0.9rem;
   color: #6b7280;
 }
 
-/* Pagination */
-
-.events-pagination {
+/* Pagination / Load more */
+.transactions-footer {
   margin-top: 1rem;
   display: flex;
   justify-content: space-between;
@@ -244,46 +247,48 @@
   color: #6b7280;
 }
 
-.events-pagination-buttons {
+.transactions-footer-left {
+  opacity: 0.9;
+}
+
+.transactions-footer-buttons {
   display: flex;
   gap: 0.5rem;
 }
 
-/* Responsive */
-
-@media (max-width: 900px) {
-  .events-filters {
+/* Responsive tweaks */
+@media (max-width: 960px) {
+  .transactions-filters {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .transactions-filter-field--wide {
+    grid-column: span 2;
   }
 }
 
 @media (max-width: 640px) {
-  .events-page {
+  .transactions-page {
     padding: 2rem 1rem;
   }
 
-  .events-card {
+  .transactions-card {
     padding: 1.75rem 1.5rem 2rem;
   }
 
-  .events-title {
+  .transactions-title {
     font-size: 1.6rem;
   }
 
-  .events-filters {
+  .transactions-filters {
     grid-template-columns: 1fr;
   }
 
-  .events-item {
-    flex-direction: column;
-    align-items: flex-start;
+  .transactions-filter-field--wide {
+    grid-column: span 1;
   }
 
-  .events-item-actions {
-    margin-top: 0.5rem;
-  }
-
-  .events-pagination {
+  .transactions-footer {
     flex-direction: column;
     gap: 0.5rem;
     align-items: flex-start;

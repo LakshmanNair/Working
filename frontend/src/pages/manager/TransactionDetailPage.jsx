@@ -1,15 +1,24 @@
+// frontend/src/pages/manager/TransactionDetailPage.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getTransaction, toggleSuspicious, createAdjustment } from '../../api/transactionsApi';
+
+import {
+  getTransaction,
+  toggleSuspicious,
+  createAdjustment,
+} from '../../api/transactionsApi';
 import { useAuth } from '../../hooks/useAuth';
+
 import Loader from '../../components/common/Loader';
 import ErrorMessage from '../../components/common/ErrorMessage';
+
+import './TransactionDetailPage.css';
 
 const TransactionDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  
+
   const [transaction, setTransaction] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -20,11 +29,13 @@ const TransactionDetailPage = () => {
 
   useEffect(() => {
     fetchTransaction();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const fetchTransaction = async () => {
     setLoading(true);
     setError('');
+
     try {
       const data = await getTransaction(id);
       setTransaction(data);
@@ -36,15 +47,23 @@ const TransactionDetailPage = () => {
   };
 
   const handleToggleSuspicious = async () => {
-    if (!window.confirm(`Are you sure you want to ${transaction.suspicious ? 'unmark' : 'mark'} this transaction as suspicious?`)) {
+    if (
+      !window.confirm(
+        `Are you sure you want to ${
+          transaction.suspicious ? 'unmark' : 'mark'
+        } this transaction as suspicious?`,
+      )
+    ) {
       return;
     }
 
     try {
       await toggleSuspicious(id, !transaction.suspicious);
-      setTransaction(prev => ({ ...prev, suspicious: !prev.suspicious }));
+      setTransaction((prev) => ({ ...prev, suspicious: !prev.suspicious }));
     } catch (err) {
-      alert(err.response?.data?.error || 'Failed to update suspicious flag');
+      alert(
+        err.response?.data?.error || 'Failed to update suspicious flag',
+      );
     }
   };
 
@@ -56,15 +75,16 @@ const TransactionDetailPage = () => {
     try {
       await createAdjustment({
         utorid: transaction.user?.utorid || transaction.utorid,
-        amount: parseInt(adjustmentAmount),
-        relatedId: parseInt(id),
+        amount: parseInt(adjustmentAmount, 10),
+        relatedId: parseInt(id, 10),
         remark: adjustmentRemark,
       });
+
       alert('Adjustment created successfully!');
       setShowAdjustmentForm(false);
       setAdjustmentAmount('');
       setAdjustmentRemark('');
-      fetchTransaction(); // Refresh to see updated user points
+      fetchTransaction(); // refresh points / related info
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to create adjustment');
     } finally {
@@ -72,257 +92,222 @@ const TransactionDetailPage = () => {
     }
   };
 
-  const getTypeColor = (type) => {
-    const colors = {
-      purchase: '#28a745',
-      redemption: '#dc3545',
-      transfer: '#007bff',
-      adjustment: '#ffc107',
-      event: '#6f42c1',
-    };
-    return colors[type] || '#6c757d';
+  const formatDate = (value) => {
+    if (!value) return 'N/A';
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return 'Invalid Date';
+    return d.toLocaleString();
   };
 
-  if (loading) return <Loader />;
-  if (error && !transaction) return <ErrorMessage message={error} />;
-  if (!transaction) return null;
+  if (loading) {
+    return (
+      <div className="transaction-detail-page">
+        <div className="transaction-detail-card transaction-detail-card--loading">
+          <Loader />
+        </div>
+      </div>
+    );
+  }
+
+  if (!transaction) {
+    return (
+      <div className="transaction-detail-page">
+        <div className="transaction-detail-card transaction-detail-card--loading">
+          <ErrorMessage message={error || 'Transaction not found.'} />
+        </div>
+      </div>
+    );
+  }
+
+  const amountNumber = Number(transaction.amount) || 0;
+  const amountClassName = `transaction-detail-amount ${
+    amountNumber >= 0
+      ? 'transaction-detail-amount--positive'
+      : 'transaction-detail-amount--negative'
+  }`;
+
+  const type = transaction.type || 'default';
+  const typeBadgeClassName = `transaction-detail-type-badge transaction-detail-type-badge--${type}`;
+
+  const statusTextClassName = `transaction-detail-status-text ${
+    transaction.suspicious
+      ? 'transaction-detail-status-text--suspicious'
+      : 'transaction-detail-status-text--normal'
+  }`;
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '2rem auto', padding: '2rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ margin: 0, color: '#333' }}>Transaction Details</h1>
-        <button
-          onClick={() => navigate('/manager/transactions')}
-          style={{
-            padding: '0.5rem 1rem',
-            backgroundColor: '#6c757d',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          Back to List
-        </button>
-      </div>
+    <div className="transaction-detail-page">
+      <div className="transaction-detail-card">
+        <div className="transaction-detail-header">
+          <h1 className="transaction-detail-title">Transaction Details</h1>
 
-      {error && <ErrorMessage message={error} onDismiss={() => setError('')} />}
+          <button
+            type="button"
+            className="transaction-detail-back"
+            onClick={() => navigate('/manager/transactions')}
+          >
+            Back to List
+          </button>
+        </div>
 
-      <div style={{ backgroundColor: '#fff', padding: '2rem', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-          <div>
-            <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.25rem' }}>Transaction ID</div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#333' }}>#{transaction.id}</div>
+        {error && (
+          <div className="transaction-detail-alert transaction-detail-alert--error">
+            <ErrorMessage message={error} />
           </div>
-          
-          <div>
-            <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.25rem' }}>Type</div>
-            <span
-              style={{
-                display: 'inline-block',
-                padding: '0.25rem 0.75rem',
-                backgroundColor: getTypeColor(transaction.type),
-                color: 'white',
-                borderRadius: '4px',
-                fontSize: '0.875rem',
-                fontWeight: '500',
-              }}
-            >
-              {transaction.type.toUpperCase()}
+        )}
+
+        <div className="transaction-detail-overview">
+          <div className="transaction-detail-overview-block">
+            <span className="transaction-detail-label">Transaction ID</span>
+            <span className="transaction-detail-value">
+              #{transaction.id}
             </span>
           </div>
 
-          <div>
-            <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.25rem' }}>Amount</div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: transaction.amount >= 0 ? '#28a745' : '#dc3545' }}>
-              {transaction.amount >= 0 ? '+' : ''}{transaction.amount} points
-            </div>
+          <div className="transaction-detail-overview-block">
+            <span className="transaction-detail-label">Type</span>
+            <span className={typeBadgeClassName}>
+              {transaction.type ? transaction.type.toUpperCase() : 'UNKNOWN'}
+            </span>
           </div>
 
-          <div>
-            <div style={{ fontSize: '0.875rem', color: '#666', marginBottom: '0.25rem' }}>Status</div>
-            <div>
-              {transaction.suspicious ? (
-                <span style={{ color: '#dc3545', fontWeight: '500' }}>⚠️ Suspicious</span>
-              ) : (
-                <span style={{ color: '#28a745', fontWeight: '500' }}>✓ Normal</span>
-              )}
-            </div>
+          <div className="transaction-detail-overview-block">
+            <span className="transaction-detail-label">Amount</span>
+            <span className={amountClassName}>
+              {amountNumber >= 0
+                ? `+${amountNumber} points`
+                : `${amountNumber} points`}
+            </span>
           </div>
-        </div>
 
-        <div style={{ borderTop: '1px solid #eee', paddingTop: '1.5rem' }}>
-          <h3 style={{ marginTop: 0, marginBottom: '1rem', color: '#333' }}>Details</h3>
-          
-          <div style={{ display: 'grid', gap: '1rem' }}>
-            <div>
-              <strong style={{ color: '#555' }}>User:</strong>{' '}
-              <span style={{ color: '#333' }}>{transaction.user?.utorid || transaction.utorid || 'N/A'}</span>
-            </div>
-            
-            {transaction.spent !== null && transaction.spent !== undefined && (
-              <div>
-                <strong style={{ color: '#555' }}>Amount Spent:</strong>{' '}
-                <span style={{ color: '#333' }}>${transaction.spent.toFixed(2)}</span>
-              </div>
-            )}
-
-            {transaction.createdBy && (
-              <div>
-                <strong style={{ color: '#555' }}>Created By:</strong>{' '}
-                <span style={{ color: '#333' }}>{transaction.createdBy.utorid || transaction.createdBy}</span>
-              </div>
-            )}
-
-            {transaction.processedBy && (
-              <div>
-                <strong style={{ color: '#555' }}>Processed By:</strong>{' '}
-                <span style={{ color: '#333' }}>{transaction.processedBy.utorid || transaction.processedBy}</span>
-              </div>
-            )}
-
-            {transaction.relatedId && (
-              <div>
-                <strong style={{ color: '#555' }}>Related Transaction:</strong>{' '}
-                <button
-                  onClick={() => navigate(`/manager/transactions/${transaction.relatedId}`)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#007bff',
-                    cursor: 'pointer',
-                    textDecoration: 'underline',
-                  }}
-                >
-                  #{transaction.relatedId}
-                </button>
-              </div>
-            )}
-
-            {transaction.promotionIds && transaction.promotionIds.length > 0 && (
-              <div>
-                <strong style={{ color: '#555' }}>Promotions:</strong>{' '}
-                <span style={{ color: '#333' }}>
-                  {transaction.promotionIds.map((pid, idx) => (
-                    <span key={pid}>
-                      #{pid}
-                      {idx < transaction.promotionIds.length - 1 && ', '}
-                    </span>
-                  ))}
-                </span>
-              </div>
-            )}
-
-            {transaction.remark && (
-              <div>
-                <strong style={{ color: '#555' }}>Remark:</strong>{' '}
-                <span style={{ color: '#333' }}>{transaction.remark}</span>
-              </div>
-            )}
-
-            <div>
-              <strong style={{ color: '#555' }}>Created At:</strong>{' '}
-              <span style={{ color: '#333' }}>
-                {new Date(transaction.createdAt).toLocaleString()}
+          <div className="transaction-detail-overview-block">
+            <span className="transaction-detail-label">Status</span>
+            <div className="transaction-detail-status">
+              <span className="transaction-detail-status-icon">
+                {transaction.suspicious ? '⚠' : '✓'}
+              </span>
+              <span className={statusTextClassName}>
+                {transaction.suspicious ? 'Suspicious' : 'Normal'}
               </span>
             </div>
           </div>
         </div>
-      </div>
 
-      <div style={{ backgroundColor: '#fff', padding: '2rem', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-        <h3 style={{ marginTop: 0, marginBottom: '1rem', color: '#333' }}>Actions</h3>
-        
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <button
-            onClick={handleToggleSuspicious}
-            style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: transaction.suspicious ? '#28a745' : '#ffc107',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
-            {transaction.suspicious ? 'Unmark as Suspicious' : 'Mark as Suspicious'}
-          </button>
+        <section className="transaction-detail-section">
+          <h2 className="transaction-detail-section-title">Details</h2>
 
-          <button
-            onClick={() => setShowAdjustmentForm(!showAdjustmentForm)}
-            style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
-            {showAdjustmentForm ? 'Cancel Adjustment' : 'Create Adjustment'}
-          </button>
-        </div>
+          <div className="transaction-detail-section transaction-detail-section--info">
+            <p className="transaction-detail-field">
+              <span className="transaction-detail-label">User: </span>
+              {transaction.user?.utorid || transaction.utorid || 'N/A'}
+            </p>
 
-        {showAdjustmentForm && (
-          <form onSubmit={handleCreateAdjustment} style={{ marginTop: '1.5rem', padding: '1.5rem', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-            <h4 style={{ marginTop: 0, marginBottom: '1rem' }}>Create Adjustment</h4>
-            
-            <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
-                Adjustment Amount (points)
-              </label>
-              <input
-                type="number"
-                value={adjustmentAmount}
-                onChange={(e) => setAdjustmentAmount(e.target.value)}
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                }}
-              />
-              <small style={{ color: '#666' }}>Positive for credit, negative for debit</small>
+            <p className="transaction-detail-field">
+              <span className="transaction-detail-label">Created By: </span>
+              {transaction.createdBy || 'N/A'}
+            </p>
+
+            <p className="transaction-detail-field">
+              <span className="transaction-detail-label">Remark: </span>
+              {transaction.remark || 'N/A'}
+            </p>
+
+            <p className="transaction-detail-field">
+              <span className="transaction-detail-label">Created At: </span>
+              {formatDate(transaction.createdAt)}
+            </p>
+          </div>
+        </section>
+
+        <section className="transaction-detail-section">
+          <div className="transaction-detail-actions-card">
+            <h2 className="transaction-detail-actions-header">Actions</h2>
+
+            <div className="transaction-detail-actions-row">
+              <button
+                type="button"
+                className={`transaction-detail-button ${
+                  transaction.suspicious
+                    ? 'transaction-detail-button--neutral'
+                    : 'transaction-detail-button--warning'
+                }`}
+                onClick={handleToggleSuspicious}
+                disabled={saving}
+              >
+                {transaction.suspicious
+                  ? 'Unmark Suspicious'
+                  : 'Mark as Suspicious'}
+              </button>
+
+              {/* Keep adjustment creation restricted if needed */}
+              {user && (
+                <button
+                  type="button"
+                  className="transaction-detail-button transaction-detail-button--primary"
+                  onClick={() => setShowAdjustmentForm((v) => !v)}
+                  disabled={saving}
+                >
+                  {showAdjustmentForm
+                    ? 'Hide Adjustment Form'
+                    : 'Create Adjustment'}
+                </button>
+              )}
             </div>
 
-            <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
-                Remark
-              </label>
-              <textarea
-                value={adjustmentRemark}
-                onChange={(e) => setAdjustmentRemark(e.target.value)}
-                rows="3"
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                }}
-              />
-            </div>
+            {showAdjustmentForm && (
+              <form
+                className="transaction-detail-form"
+                onSubmit={handleCreateAdjustment}
+              >
+                <div className="transaction-detail-form-field">
+                  <label htmlFor="adjustmentAmount">
+                    Adjustment Amount (points)
+                  </label>
+                  <input
+                    id="adjustmentAmount"
+                    type="number"
+                    value={adjustmentAmount}
+                    onChange={(e) => setAdjustmentAmount(e.target.value)}
+                    required
+                  />
+                </div>
 
-            <button
-              type="submit"
-              disabled={saving}
-              style={{
-                padding: '0.75rem 1.5rem',
-                backgroundColor: saving ? '#6c757d' : '#28a745',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: saving ? 'not-allowed' : 'pointer',
-              }}
-            >
-              {saving ? 'Creating...' : 'Create Adjustment'}
-            </button>
-          </form>
-        )}
+                <div className="transaction-detail-form-field">
+                  <label htmlFor="adjustmentRemark">Remark</label>
+                  <textarea
+                    id="adjustmentRemark"
+                    value={adjustmentRemark}
+                    onChange={(e) => setAdjustmentRemark(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="transaction-detail-form-actions">
+                  <button
+                    type="submit"
+                    className="transaction-detail-button transaction-detail-button--primary"
+                    disabled={saving}
+                  >
+                    Save Adjustment
+                  </button>
+                  <button
+                    type="button"
+                    className="transaction-detail-button transaction-detail-button--neutral"
+                    onClick={() => setShowAdjustmentForm(false)}
+                    disabled={saving}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </section>
       </div>
     </div>
   );
 };
 
 export default TransactionDetailPage;
+
 

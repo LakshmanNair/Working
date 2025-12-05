@@ -1,0 +1,182 @@
+/* RedemptionRequestPage.css */
+
+/* Page container, same shell as manager list/detail pages */
+.redemption-page {
+  min-height: calc(100vh - 64px);
+  padding: 3rem 1.5rem;
+  background: #f4f5f7;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Main card */
+.redemption-card {
+  width: 100%;
+  max-width: 1100px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+  padding: 2.5rem 2.25rem 2.75rem;
+  color: #1f2933;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Header */
+.redemption-title {
+  margin: 0 0 0.35rem;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #111827;
+}
+
+.redemption-subtitle {
+  margin: 0 0 1.5rem;
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+
+.redemption-balance-strong {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Alerts */
+.redemption-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.redemption-alert--error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+/* Form */
+.redemption-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.redemption-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.redemption-form-field label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.redemption-form-field input,
+.redemption-form-field textarea {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+  color: #111827;
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.redemption-form-field textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.redemption-form-field input:focus,
+.redemption-form-field textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.35);
+  background: #f9fafb;
+}
+
+/* Actions */
+.redemption-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.redemption-submit-button,
+.redemption-secondary-button {
+  border-radius: 999px;
+  padding: 0.6rem 1.6rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease,
+    transform 0.04s ease;
+}
+
+.redemption-submit-button {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.redemption-submit-button:hover:not(:disabled) {
+  background: #1d4ed8;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+}
+
+.redemption-secondary-button {
+  background: #ffffff;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.redemption-secondary-button:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+/* Disabled state */
+.redemption-submit-button:disabled,
+.redemption-secondary-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* Success state text */
+.redemption-success-text {
+  margin: 0.25rem 0 0.75rem;
+  font-size: 0.98rem;
+  color: #374151;
+}
+
+.redemption-success-balance {
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+
+.redemption-success-balance strong {
+  color: #111827;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .redemption-page {
+    padding: 2rem 1rem;
+  }
+
+  .redemption-card {
+    padding: 1.75rem 1.5rem 2rem;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .redemption-title {
+    font-size: 1.6rem;
+  }
+}

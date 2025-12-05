@@ -175,7 +175,7 @@ export default function EventsListPage() {
                     </div>
                     <div className="events-item-actions">
                       <Link
-                        to={`/events/${event.id}`}
+                        to={`/me/events/${event.id}`}
                         className="events-link"
                       >
                         View

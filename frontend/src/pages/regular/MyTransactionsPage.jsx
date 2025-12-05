@@ -1,15 +1,22 @@
+// frontend/src/pages/me/MyTransactionsPage.jsx
 import { useState, useEffect } from 'react';
 import { listMyTransactions } from '../../api/transactionsApi';
 import Loader from '../../components/common/Loader';
 import ErrorMessage from '../../components/common/ErrorMessage';
 
+import './MyTransactionsPage.css';
+
 const MyTransactionsPage = () => {
   const [transactions, setTransactions] = useState([]);
-  const [totalCount, setTotalCount] = useState(0); // New state to track total items
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
-  const [filters, setFilters] = useState({ type: '', minAmount: '', maxAmount: '' });
+  const [filters, setFilters] = useState({
+    type: '',
+    minAmount: '',
+    maxAmount: '',
+  });
 
   useEffect(() => {
     fetchTransactions();
@@ -19,25 +26,28 @@ const MyTransactionsPage = () => {
   const fetchTransactions = async () => {
     setLoading(true);
     setError(null);
+
     try {
       const params = {
         page,
         limit: 20,
-        ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== '')),
+        ...Object.fromEntries(
+          Object.entries(filters).filter(([, v]) => v !== ''),
+        ),
       };
-      
+
       const response = await listMyTransactions(params);
-      
-      // Backend returns { count, results: [...] }
-      const transactionsArray = Array.isArray(response) 
-        ? response 
-        : (Array.isArray(response?.results) ? response.results : []);
-      
-      // Update total count from response to control Load More button
+
+      const transactionsArray = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.results)
+        ? response.results
+        : [];
+
       if (response && typeof response.count === 'number') {
         setTotalCount(response.count);
       } else if (page === 1) {
-        setTotalCount(transactionsArray.length); 
+        setTotalCount(transactionsArray.length);
       }
 
       if (page === 1) {
@@ -46,154 +56,187 @@ const MyTransactionsPage = () => {
         setTransactions((prev) => [...prev, ...transactionsArray]);
       }
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error('Error fetching transactions:', err);
       setError(err.response?.data?.error || 'Failed to fetch transactions');
-      if (page === 1) setTransactions([]); 
+
+      if (page === 1) {
+        setTransactions([]);
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const getTypeColor = (type) => {
-    const colors = {
-      purchase: '#28a745',
-      redemption: '#dc3545',
-      transfer: '#007bff',
-      adjustment: '#ffc107',
-      event: '#6f42c1',
-    };
-    return colors[type] || '#6c757d';
+  const handleFilterChange = (field, value) => {
+    setPage(1);
+    setFilters((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
-  // Only show full loader on initial load
+  const handleClearFilters = () => {
+    setPage(1);
+    setFilters({
+      type: '',
+      minAmount: '',
+      maxAmount: '',
+    });
+  };
+
+  const formatDate = (value) => {
+    if (!value) return 'N/A';
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return 'Invalid date';
+    return d.toLocaleString();
+  };
+
+  const getTypeModifier = (type) => {
+    if (!type) return 'default';
+    return type.toLowerCase();
+  };
+
   if (loading && page === 1 && transactions.length === 0) {
     return (
-      <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
-        <Loader />
+      <div className="my-transactions-page">
+        <div className="my-transactions-card">
+          <Loader />
+        </div>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1>My Transactions</h1>
-      
-      {/* Filters */}
-      <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-        <select
-          value={filters.type}
-          onChange={(e) => {
-            setFilters({ ...filters, type: e.target.value });
-            setPage(1); // Reset to page 1 on filter change
-          }}
-          style={{ padding: '0.5rem' }}
-        >
-          <option value="">All Types</option>
-          <option value="purchase">Purchase</option>
-          <option value="redemption">Redemption</option>
-          <option value="transfer">Transfer</option>
-          <option value="adjustment">Adjustment</option>
-          <option value="event">Event</option>
-        </select>
-        
-        <input
-          type="number"
-          placeholder="Min Amount"
-          value={filters.minAmount}
-          onChange={(e) => {
-            setFilters({ ...filters, minAmount: e.target.value });
-            setPage(1); // Reset to page 1
-          }}
-          style={{ padding: '0.5rem' }}
-        />
-        
-        <input
-          type="number"
-          placeholder="Max Amount"
-          value={filters.maxAmount}
-          onChange={(e) => {
-            setFilters({ ...filters, maxAmount: e.target.value });
-            setPage(1); // Reset to page 1
-          }}
-          style={{ padding: '0.5rem' }}
-        />
-        
-        <button
-          onClick={() => {
-            setFilters({ type: '', minAmount: '', maxAmount: '' });
-            setPage(1);
-          }}
-          style={{ padding: '0.5rem 1rem' }}
-        >
-          Clear
-        </button>
-      </div>
+    <div className="my-transactions-page">
+      <div className="my-transactions-card">
+        <header className="my-transactions-header">
+          <h1 className="my-transactions-title">My Transactions</h1>
+          <p className="my-transactions-subtitle">
+            View your recent purchases, transfers, redemptions, and more.
+          </p>
+        </header>
 
-      {error && <ErrorMessage message={error} />}
-
-      {transactions.length === 0 && !loading && !error && (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
-          <p>No transactions found.</p>
-        </div>
-      )}
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        {transactions.map((tx) => (
-          <div
-            key={tx.id}
-            style={{
-              border: '1px solid #ddd',
-              borderRadius: '8px',
-              padding: '1rem',
-              backgroundColor: '#f9f9f9',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <span
-                  style={{
-                    backgroundColor: getTypeColor(tx.type),
-                    color: 'white',
-                    padding: '0.25rem 0.5rem',
-                    borderRadius: '4px',
-                    fontSize: '0.875rem',
-                    marginRight: '0.5rem',
-                  }}
-                >
-                  {tx.type.toUpperCase()}
-                </span>
-                <strong>Amount: {tx.amount} points</strong>
-                {tx.spent && <span style={{ marginLeft: '1rem' }}>Spent: ${tx.spent}</span>}
-              </div>
-              <div style={{ color: '#666', fontSize: '0.875rem' }}>
-                {tx.createdAt ? new Date(tx.createdAt).toLocaleString() : 'N/A'}
-              </div>
-            </div>
-            {tx.remark && (
-              <div style={{ marginTop: '0.5rem', color: '#666' }}>{tx.remark}</div>
-            )}
+        {error && (
+          <div className="my-transactions-alert my-transactions-alert--error">
+            <ErrorMessage message={error} />
           </div>
-        ))}
-      </div>
+        )}
 
-      {/* Conditionally render Load More button based on total count */}
-      {transactions.length < totalCount && (
-        <button
-          onClick={() => setPage(page + 1)}
-          disabled={loading}
-          style={{
-            marginTop: '2rem',
-            padding: '0.75rem 1.5rem',
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-          }}
-        >
-          {loading ? 'Loading...' : 'Load More'}
-        </button>
-      )}
+        {/* Filters */}
+        <h2 className="transaction-section-title">Filters</h2>
+        <section className="my-transactions-filters">
+          <div className="my-transactions-filter-field">
+            <label htmlFor="filterType">Type</label>
+            <select
+              id="filterType"
+              value={filters.type}
+              onChange={(e) => handleFilterChange('type', e.target.value)}
+            >
+              <option value="">All Types</option>
+              <option value="purchase">Purchase</option>
+              <option value="redemption">Redemption</option>
+              <option value="transfer">Transfer</option>
+              <option value="adjustment">Adjustment</option>
+              <option value="event">Event</option>
+            </select>
+          </div>
+
+          <div className="my-transactions-filter-field">
+            <label htmlFor="filterMinAmount">Min Amount</label>
+            <input
+              id="filterMinAmount"
+              type="number"
+              placeholder="Min Amount"
+              value={filters.minAmount}
+              onChange={(e) => handleFilterChange('minAmount', e.target.value)}
+            />
+          </div>
+
+          <div className="my-transactions-filter-field">
+            <label htmlFor="filterMaxAmount">Max Amount</label>
+            <input
+              id="filterMaxAmount"
+              type="number"
+              placeholder="Max Amount"
+              value={filters.maxAmount}
+              onChange={(e) => handleFilterChange('maxAmount', e.target.value)}
+            />
+          </div>
+
+          <div className="my-transactions-filter-actions">
+            <button
+              type="button"
+              className="my-transactions-button my-transactions-button--ghost"
+              onClick={handleClearFilters}
+            >
+              Clear
+            </button>
+          </div>
+        </section>
+
+        {/* Transactions list */}
+        {transactions.length === 0 && !loading ? (
+          <div className="my-transactions-empty">No transactions found.</div>
+        ) : (
+          <div className="my-transactions-list">
+            {transactions.map((tx) => {
+              const amountNumber = Number(tx.amount) || 0;
+              const amountClass =
+                'my-transactions-amount ' +
+                (amountNumber >= 0
+                  ? 'my-transactions-amount--positive'
+                  : 'my-transactions-amount--negative');
+
+              const typeModifier = getTypeModifier(tx.type);
+              const typeBadgeClass = `my-transactions-type-badge my-transactions-type-badge--${typeModifier}`;
+
+              return (
+                <article key={tx.id} className="my-transactions-item">
+                  <div className="my-transactions-item-main">
+                    <div className="my-transactions-item-header">
+                      <span className={typeBadgeClass}>
+                        {tx.type ? tx.type.toUpperCase() : 'UNKNOWN'}
+                      </span>
+                      <span className={amountClass}>
+                        Amount:{' '}
+                        {amountNumber >= 0
+                          ? `+${amountNumber} points`
+                          : `${amountNumber} points`}
+                      </span>
+                    </div>
+                    <p className="my-transactions-remark">
+                      {tx.remark || 'No description provided'}
+                    </p>
+                  </div>
+                  <div className="my-transactions-item-meta">
+                    <div>{formatDate(tx.createdAt)}</div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Footer with count and Load More */}
+        <footer className="my-transactions-footer">
+          <span>
+            Showing {transactions.length} of {totalCount} transaction
+            {totalCount === 1 ? '' : 's'}
+          </span>
+
+          {transactions.length < totalCount && (
+            <button
+              type="button"
+              className="my-transactions-button my-transactions-button--primary"
+              onClick={() => setPage((prev) => prev + 1)}
+              disabled={loading}
+            >
+              {loading ? 'Loading…' : 'Load More'}
+            </button>
+          )}
+        </footer>
+      </div>
     </div>
   );
 };

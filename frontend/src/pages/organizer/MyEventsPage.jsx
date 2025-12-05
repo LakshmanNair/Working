@@ -86,9 +86,15 @@ export default function MyEventsPage() {
             {events.map((event) => {
               const start = new Date(event.startTime).toLocaleString();
               const end = new Date(event.endTime).toLocaleString();
-              const guestsText = event.capacity
-                ? `${event.numGuests} / ${event.capacity}`
-                : `${event.numGuests}`;
+              const guestsCount = Array.isArray(event.guests)
+                ? event.guests.length
+                : typeof event.numGuests === 'number'
+                  ? event.numGuests
+                  : 0;
+
+              const guestsText = `${guestsCount} / ${
+                event.capacity != null ? event.capacity : 'N/A'
+              }`;
               const totalPoints =
                 event.pointsRemain != null && event.pointsAwarded != null
                   ? event.pointsRemain + event.pointsAwarded
@@ -111,14 +117,14 @@ export default function MyEventsPage() {
                   </div>
                   <div className="my-events-item-actions">
                     <Link
-                      to={`/events/${event.id}`}
+                      to={`/me/events/${event.id}`}
                       className="my-events-link"
                     >
                       View as User
                     </Link>
                     <span className="my-events-divider">•</span>
                     <Link
-                      to={`/manager/events/${event.id}`}
+                      to={`/organizer/events/${event.id}`}
                       className="my-events-link"
                     >
                       Manage Guests / Award Points

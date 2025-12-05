@@ -1,0 +1,196 @@
+/* TransferPointsPage.css */
+
+/* Page container, same shell as RedemptionRequestPage */
+.transfer-page {
+  min-height: calc(100vh - 64px);
+  padding: 3rem 1.5rem;
+  background: #f4f5f7;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Main card */
+.transfer-card {
+  width: 100%;
+  max-width: 1100px; /* match redemption/users width */
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+  padding: 2.5rem 2.25rem 2.75rem;
+  color: #1f2933;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+}
+
+/* Header */
+.transfer-title {
+  margin: 0 0 0.35rem;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #111827;
+}
+
+.transfer-subtitle {
+  margin: 0 0 1.5rem;
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+
+.transfer-balance-strong {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Alerts */
+.transfer-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.transfer-alert--error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.transfer-alert--success {
+  background: #ecfdf3;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+/* Form */
+.transfer-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.transfer-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.transfer-form-field label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Recipient lookup row */
+.transfer-lookup-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.transfer-lookup-row input {
+  flex: 1 1 220px;
+}
+
+/* Inputs */
+.transfer-form-field input,
+.transfer-form-field textarea {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+  color: #111827;
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.transfer-form-field textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.transfer-form-field input:focus,
+.transfer-form-field textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.35);
+  background: #f9fafb;
+}
+
+/* Recipient info text */
+.transfer-recipient-info {
+  margin: 0.15rem 0 0;
+  font-size: 0.88rem;
+  color: #4b5563;
+}
+
+/* Actions */
+.transfer-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Buttons */
+.transfer-button {
+  border-radius: 999px;
+  padding: 0.6rem 1.6rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease,
+    color 0.15s ease, transform 0.04s ease;
+}
+
+.transfer-button--primary {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.transfer-button--primary:hover:not(:disabled) {
+  background: #1d4ed8;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+}
+
+.transfer-button--secondary {
+  background: #ffffff;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.transfer-button--secondary:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+.transfer-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .transfer-page {
+    padding: 2rem 1rem;
+  }
+
+  .transfer-card {
+    padding: 1.75rem 1.5rem 2rem;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .transfer-title {
+    font-size: 1.6rem;
+  }
+
+  .transfer-lookup-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

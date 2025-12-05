@@ -1,0 +1,347 @@
+/* TransactionDetailPage.css */
+
+/* Page + card, aligned with UserDetailPage */
+.transaction-detail-page {
+  min-height: calc(100vh - 64px);
+  padding: 3rem 1.5rem;
+  background: #f4f5f7;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.transaction-detail-card {
+  width: 100%;
+  max-width: 1100px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+  padding: 2.5rem 2.25rem 2.75rem;
+  color: #1f2933;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.transaction-detail-card--loading {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+/* Top header + back button */
+.transaction-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.75rem;
+}
+
+.transaction-detail-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #111827;
+}
+
+.transaction-detail-back {
+  border-radius: 999px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: #6b7280;
+  color: #ffffff;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease,
+    color 0.15s ease, transform 0.04s ease;
+}
+
+.transaction-detail-back:hover {
+  background: #4b5563;
+}
+
+/* Overview row: id, type, amount, status */
+.transaction-detail-overview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.transaction-detail-overview-block {
+  min-width: 150px;
+}
+
+.transaction-detail-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.transaction-detail-value {
+  font-size: 1rem;
+  color: #111827;
+  font-weight: 500;
+}
+
+/* Type pill – colors match getTypeColor mapping */
+.transaction-detail-type-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+}
+
+.transaction-detail-type-badge--purchase {
+  background: #28a745;
+}
+
+.transaction-detail-type-badge--redemption {
+  background: #dc3545;
+}
+
+.transaction-detail-type-badge--transfer {
+  background: #007bff;
+}
+
+.transaction-detail-type-badge--adjustment {
+  background: #ffc107;
+  color: #1f2933;
+}
+
+.transaction-detail-type-badge--event {
+  background: #6f42c1;
+}
+
+.transaction-detail-type-badge--default {
+  background: #6c757d;
+}
+
+/* Amount */
+.transaction-detail-amount {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.transaction-detail-amount--positive {
+  color: #16a34a;
+}
+
+.transaction-detail-amount--negative {
+  color: #dc2626;
+}
+
+/* Status line with icon + text */
+.transaction-detail-status {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+}
+
+.transaction-detail-status-icon {
+  font-size: 1rem;
+}
+
+.transaction-detail-status-text {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.transaction-detail-status-text--normal {
+  color: #16a34a;
+}
+
+.transaction-detail-status-text--suspicious {
+  color: #b91c1c;
+}
+
+/* Sections */
+.transaction-detail-section {
+  margin-top: 1.5rem;
+}
+
+.transaction-detail-section-title {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Details box */
+.transaction-detail-section--info {
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.transaction-detail-field {
+  margin: 0.15rem 0;
+  font-size: 0.92rem;
+  color: #111827;
+}
+
+/* Actions section */
+.transaction-detail-actions-card {
+  margin-top: 1.75rem;
+  padding: 1.25rem 1.25rem 1.5rem;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.transaction-detail-actions-header {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.transaction-detail-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* Buttons – colors kept from existing design */
+.transaction-detail-button {
+  border-radius: 999px;
+  padding: 0.55rem 1.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease,
+    color 0.15s ease, transform 0.04s ease;
+}
+
+/* Blue primary (Create Adjustment) */
+.transaction-detail-button--primary {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.transaction-detail-button--primary:hover:not(:disabled) {
+  background: #1d4ed8;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+}
+
+/* Yellow warning (Mark as Suspicious) */
+.transaction-detail-button--warning {
+  background: #fbbf24;
+  color: #111827;
+  border-color: #fbbf24;
+}
+
+.transaction-detail-button--warning:hover:not(:disabled) {
+  background: #f59e0b;
+  box-shadow: 0 10px 20px rgba(245, 158, 11, 0.25);
+}
+
+/* Grey neutral (Unmark Suspicious) */
+.transaction-detail-button--neutral {
+  background: #e5e7eb;
+  color: #111827;
+  border-color: #e5e7eb;
+}
+
+.transaction-detail-button--neutral:hover:not(:disabled) {
+  background: #d1d5db;
+}
+
+/* Form for creating adjustment */
+.transaction-detail-form {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.transaction-detail-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.transaction-detail-form-field label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.transaction-detail-form-field input,
+.transaction-detail-form-field textarea {
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  color: #111827;
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.transaction-detail-form-field textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.transaction-detail-form-field input:focus,
+.transaction-detail-form-field textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.35);
+  background: #f9fafb;
+}
+
+.transaction-detail-form-actions {
+  margin-top: 0.25rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Alerts under header */
+.transaction-detail-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.transaction-detail-alert--error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .transaction-detail-page {
+    padding: 2rem 1rem;
+  }
+
+  .transaction-detail-card {
+    padding: 1.75rem 1.5rem 2rem;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .transaction-detail-title {
+    font-size: 1.6rem;
+  }
+
+  .transaction-detail-overview {
+    gap: 1.25rem;
+  }
+}

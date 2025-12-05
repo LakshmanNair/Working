@@ -167,11 +167,12 @@ export default function EventAwardPointsPage() {
     );
   }
 
-  const totalPoints =
-    event.pointsRemain != null && event.pointsAwarded != null
-      ? event.pointsRemain + event.pointsAwarded
-      : null;
-
+  const hasPoints =
+    event.pointsRemain != null && event.pointsAwarded != null;
+  const totalPoints = hasPoints
+    ? event.pointsRemain + event.pointsAwarded
+    : null;
+    
   return (
     <div className="award-page">
       <div className="award-card">

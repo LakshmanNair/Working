@@ -108,7 +108,7 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/events"
+        path="/me/events"
         element={
           <RequireAuth>
             <EventsListPage />
@@ -116,7 +116,23 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/events/:eventId"
+        path="/me/myevents"
+        element={
+          <RequireAuth>
+            <MyEventsPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/organizer/events/:eventId"
+        element={
+          <RequireAuth>
+            <EventAwardPointsPage />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/me/events/:eventId"
         element={
           <RequireAuth>
             <EventDetailPage />
@@ -218,7 +234,7 @@ const AppRoutes = () => {
       <Route
         path="/manager/events/:eventId"
         element={
-          <RequireAuth requiredRole="manager">
+          <RequireAuth>
             <ManagerEventDetailPage />
           </RequireAuth>
         }
@@ -228,16 +244,16 @@ const AppRoutes = () => {
       <Route
         path="/organizer/events"
         element={
-          <RequireAuth requiredRole="manager">
+          <RequireAuth>
             <MyEventsPage />
           </RequireAuth>
         }
       />
       <Route
-        path="/organizer/events/:eventId/award"
+        path="/organizer/events/:eventId"
         element={
-          <RequireAuth requiredRole="manager">
-            <EventAwardPointsPage />
+          <RequireAuth>
+            <EventAwardPointsPage/>
           </RequireAuth>
         }
       />

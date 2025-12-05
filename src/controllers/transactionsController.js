@@ -160,6 +160,7 @@ async function createTransaction(req, res) {
         remark,
         promotionIds: finalPromoIds,
         createdBy: creator.utorid,
+        createdAt: tx.createdAt, // Return creation date
       });
     }
 
@@ -205,6 +206,7 @@ async function createTransaction(req, res) {
         remark,
         promotionIds: promotionIds || [],
         createdBy: creator.utorid,
+        createdAt: tx.createdAt,
       });
     }
   } catch (err) {
@@ -215,7 +217,10 @@ async function createTransaction(req, res) {
   }
 }
 
+// -------------------------------------------------------------
 // GET /transactions
+// Clearance: Manager or higher
+// -------------------------------------------------------------
 async function listTransactions(req, res) {
   try {
     const role = req.auth?.role;
@@ -299,6 +304,7 @@ async function listTransactions(req, res) {
       suspicious: t.suspicious,
       remark: t.remark,
       createdBy: t.createdBy ? t.createdBy.utorid : null,
+      createdAt: t.createdAt, // <--- ADDED THIS LINE (Fixes Invalid Date)
     }));
 
     res.json({ count, results: data });
@@ -310,13 +316,13 @@ async function listTransactions(req, res) {
 
 // -------------------------------------------------------------
 // GET /transactions/:transactionId
-// Clearance: Manager or higher
+// Clearance: Cashier or higher
 // -------------------------------------------------------------
 async function getTransaction(req, res) {
   try {
     const role = req.auth?.role;
-    if (!['manager', 'superuser'].includes(role))
-      return res.status(403).json({ error: 'Manager or higher required' });
+    if (!['cashier', 'manager', 'superuser'].includes(role))
+      return res.status(403).json({ error: 'Cashier or higher required' });
 
     const id = parseInt(req.params.transactionId);
     if (isNaN(id)) return res.status(400).json({ error: 'Invalid ID' });
@@ -342,6 +348,8 @@ async function getTransaction(req, res) {
       suspicious: tx.suspicious,
       remark: tx.remark,
       createdBy: tx.createdBy ? tx.createdBy.utorid : null,
+      processedBy: tx.processedByUserId,
+      createdAt: tx.createdAt, // <--- ADDED THIS LINE (Fixes Invalid Date on details page)
     });
   } catch (err) {
     console.error(err);
@@ -386,6 +394,7 @@ async function toggleSuspicious(req, res) {
         suspicious: tx.suspicious,
         remark: tx.remark,
         createdBy: tx.createdBy ? tx.createdBy.utorid : null,
+        createdAt: tx.createdAt,
       });
 
     // Update transaction suspicious flag
@@ -412,6 +421,7 @@ async function toggleSuspicious(req, res) {
       suspicious,
       remark: tx.remark,
       createdBy: tx.createdBy ? tx.createdBy.utorid : null,
+      createdAt: tx.createdAt,
     });
   } catch (err) {
     console.error(err);
@@ -469,6 +479,7 @@ async function processRedemption(req, res) {
       redeemed: updatedTx.redeemed,
       remark: updatedTx.remark,
       createdBy: updatedTx.createdBy ? updatedTx.createdBy.utorid : null,
+      createdAt: updatedTx.createdAt,
     });
   } catch (err) {
     console.error(err);
@@ -564,6 +575,7 @@ async function transferPoints(req, res) {
       sent: amount,
       remark,
       createdBy: sender.utorid,
+      createdAt: result.senderTx.createdAt,
     });
   } catch (err) {
     console.error(err);

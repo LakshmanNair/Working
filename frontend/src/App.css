@@ -276,7 +276,6 @@
   font-size: 0.95rem;
 }
 
-/* App.css - Shared Layout & Form Styles */
 
 :root {
   --primary-color: #007bff;
@@ -284,7 +283,7 @@
   --secondary-color: #6c757d;
   --danger-color: #dc3545;
   --success-color: #28a745;
-  --background-bg: #f8f9fa;
+  --background-bg: #f4f5f7;
   --card-bg: #ffffff;
   --border-color: #dee2e6;
   --text-primary: #212529;
@@ -293,10 +292,100 @@
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
+/* Remove default #root constraints */
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+/* =========================================
+   1. LOGIN PAGE SPECIFIC STYLES 
+   (Scoped to .login-container to prevent leaks)
+   ========================================= */
+.login-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #242424; 
+}
+
+.login-card {
+  background-color: #1a1a1a; 
+  padding: 2.5rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  border: 1px solid #333;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #fff;
+}
+
+.login-subtitle {
+  color: #888;
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+}
+
+/* Only apply dark inputs inside the login form */
+.login-form .form-group label {
+  color: #ccc;
+}
+
+.login-form .form-group input {
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid #444;
+}
+
+.login-form .form-group input:focus {
+  border-color: #007bff; 
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.login-button {
+  margin-top: 1rem;
+  padding: 0.85rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.login-button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.login-error-wrapper {
+  margin-bottom: 1.5rem;
+}
+
+/* =========================================
+   2. MAIN APP LAYOUT
+   ========================================= */
+
 .page-container {
   max-width: 900px;
   margin: 2rem auto;
-  padding: 0 1rem;
+  padding: 0 1rem 6rem 1rem; /* Added 6rem padding at bottom to prevent touching footer */
 }
 
 .page-header {
@@ -344,12 +433,16 @@
 .form-group {
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
 }
 
-/* Inputs & Labels */
+/* =========================================
+   3. MODERN INPUTS (White Theme)
+   ========================================= */
+
 .field-label {
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   color: var(--text-primary);
   font-size: 0.9rem;
 }
@@ -359,15 +452,19 @@
   margin-left: 4px;
 }
 
+/* Force white background and borders for main app inputs */
 .input-field,
 .select-field,
 .textarea-field {
+  width: 100%;
   padding: 0.75rem;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
+  border: 1px solid #ced4da; /* Lighter border */
+  border-radius: 6px;
   font-size: 1rem;
   transition: border-color 0.2s, box-shadow 0.2s;
-  background-color: #fff;
+  background-color: #ffffff !important; /* Override any dark theme leaks */
+  color: #212529 !important; /* Dark text */
+  box-sizing: border-box; /* Ensure padding doesn't break width */
 }
 
 .input-field:focus,
@@ -406,6 +503,7 @@
   border-radius: 6px;
   font-weight: 600;
   transition: all 0.2s;
+  color: #495057;
 }
 
 .type-option.active {
@@ -414,10 +512,10 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Promotions List */
+/* Promotions Grid */
 .promotions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1rem;
   margin-top: 0.5rem;
 }
@@ -425,12 +523,13 @@
 .promo-checkbox-card {
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  padding: 10px;
+  padding: 1rem;
   cursor: pointer;
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-start; /* Align to top */
+  gap: 12px;
   transition: all 0.2s;
+  background-color: #fff;
 }
 
 .promo-checkbox-card:hover {
@@ -441,8 +540,6 @@
 .promo-checkbox-card.selected {
   background-color: #e8f0fe;
   border-color: var(--primary-color);
-  color: var(--primary-color);
-  font-weight: 500;
 }
 
 /* Actions */
@@ -482,6 +579,11 @@
   background: #dde0e3;
 }
 
+.btn-success {
+  background: var(--success-color);
+  color: white;
+}
+
 .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -493,15 +595,13 @@
   padding: 1rem;
   margin-bottom: 1.5rem;
   border-radius: 4px;
+  color: #0c5460;
 }
 
 .info-box-title {
   font-weight: 700;
-  color: #0c5460;
   margin-bottom: 0.25rem;
 }
-
-/* App.css - Add to the bottom */
 
 /* Loader / Spinner */
 .loader-container {
