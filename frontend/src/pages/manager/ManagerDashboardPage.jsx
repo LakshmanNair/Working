@@ -216,18 +216,21 @@ const ManagerDashboardPage = () => {
           <h2>Promotion Usage Comparison</h2>
           <div style={{ width: '100%', height: '400px', backgroundColor: '#fff', padding: '1rem', borderRadius: '8px' }}>
             <ResponsiveContainer>
-              <BarChart data={promotionUsage}>
+            <BarChart 
+                data={promotionUsage}
+                margin={{ top: -5, right: 30, left: 20, bottom: 100 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="name" 
                   angle={-45} 
                   textAnchor="end" 
-                  height={100}
+                  height={100} 
                   interval={0}
                 />
                 <YAxis />
                 <Tooltip />
-                <Legend />
+                <Legend verticalAlign="top" wrapperStyle={{ lineHeight: '40px' }} /> {/* Optional: move legend to top to save bottom space */}
                 <Bar dataKey="totalUses" fill="#8884d8" name="Total Uses" />
                 <Bar dataKey="uniqueUsers" fill="#82ca9d" name="Unique Users" />
                 <Bar dataKey="totalRedemptions" fill="#ffc658" name="Total Redemptions" />

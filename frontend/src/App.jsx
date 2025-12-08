@@ -28,7 +28,7 @@ import UsersListPage from './pages/manager/UsersListPage';
 import UserDetailPage from './pages/manager/UserDetailPage';
 import ManagerEventsListPage from './pages/manager/ManagerEventsListPage';
 import ManagerEventDetailPage from './pages/manager/ManagerEventDetailPage';
-
+import ManagerEventCreatePage from './pages/manager/ManagerEventCreatePage';
 // Profile pages
 import ProfilePage from './pages/profile/ProfilePage';
 
@@ -230,6 +230,14 @@ const AppRoutes = () => {
             <ManagerEventsListPage />
           </RequireAuth>
         }
+      />
+      <Route
+      path="/manager/events/new"
+      element={
+        <RequireAuth requiredRole="manager">
+          <ManagerEventCreatePage />
+        </RequireAuth>
+      }
       />
       <Route
         path="/manager/events/:eventId"

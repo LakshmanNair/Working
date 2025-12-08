@@ -1,7 +1,6 @@
-/* TransferPointsPage.css */
+/* ProcessRedemptionPage.css */
 
-/* Page container, same shell as RedemptionRequestPage */
-.transfer-page {
+.process-redemption-page {
   min-height: calc(100vh - 64px);
   padding: 3rem 1.5rem;
   background: #f4f5f7;
@@ -10,10 +9,9 @@
   align-items: flex-start;
 }
 
-/* Main card */
-.transfer-card {
+.process-redemption-card {
   width: 100%;
-  max-width: 1100px; /* match redemption/users width */
+  max-width: 1100px;
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
@@ -24,7 +22,8 @@
 }
 
 /* Header */
-.transfer-title {
+
+.process-redemption-title {
   margin: 0 0 0.35rem;
   font-size: 2rem;
   font-weight: 700;
@@ -32,71 +31,55 @@
   color: #111827;
 }
 
-.transfer-subtitle {
+.process-redemption-subtitle {
   margin: 0 0 1.5rem;
   font-size: 0.95rem;
   color: #4b5563;
 }
 
-.transfer-balance-strong {
-  font-weight: 600;
-  color: #111827;
-}
-
 /* Alerts */
-.transfer-alert {
+
+.process-redemption-alert {
   padding: 0.75rem 1rem;
   border-radius: 8px;
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
 
-.transfer-alert--error {
+.process-redemption-alert--error {
   background: #fef2f2;
   color: #b91c1c;
   border: 1px solid #fecaca;
 }
 
-.transfer-alert--success {
+.process-redemption-alert--success {
   background: #ecfdf3;
   color: #166534;
   border: 1px solid #bbf7d0;
 }
 
 /* Form */
-.transfer-form {
+
+.process-redemption-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-bottom: 1.75rem;
 }
 
-.transfer-form-field {
+.process-redemption-field {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
-.transfer-form-field label {
+.process-redemption-field label {
   font-size: 0.9rem;
   font-weight: 500;
   color: #374151;
 }
 
-/* Recipient lookup row */
-.transfer-lookup-row {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.transfer-lookup-row input {
-  flex: 1 1 220px;
-}
-
-/* Inputs */
-.transfer-form-field input,
-.transfer-form-field textarea {
+.process-redemption-field input {
   border-radius: 8px;
   border: 1px solid #d1d5db;
   padding: 0.6rem 0.75rem;
@@ -107,38 +90,25 @@
     background-color 0.15s ease;
 }
 
-.transfer-form-field textarea {
-  min-height: 140px;
-  resize: vertical;
-}
-
-.transfer-form-field input:focus,
-.transfer-form-field textarea:focus {
+.process-redemption-field input:focus {
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.35);
   background: #f9fafb;
 }
 
-/* Recipient info text */
-.transfer-recipient-info {
-  margin: 0.15rem 0 0;
-  font-size: 0.88rem;
-  color: #4b5563;
-}
-
 /* Actions */
-.transfer-actions {
-  margin-top: 1.5rem;
+
+.process-redemption-actions {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
 }
 
-/* Buttons */
-.transfer-button {
+.process-redemption-button-primary,
+.process-redemption-button-secondary {
   border-radius: 999px;
-  padding: 0.6rem 1.6rem;
+  padding: 0.6rem 1.5rem;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
@@ -147,63 +117,83 @@
     color 0.15s ease, transform 0.04s ease;
 }
 
-.transfer-button--primary {
+.process-redemption-button-primary {
   background: #2563eb;
   color: #ffffff;
   border-color: #2563eb;
 }
 
-.transfer-button--primary:hover:not(:disabled) {
+.process-redemption-button-primary:hover:not(:disabled) {
   background: #1d4ed8;
   box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
 }
 
-.transfer-button--secondary {
+.process-redemption-button-secondary {
   background: #ffffff;
   color: #374151;
   border-color: #d1d5db;
 }
 
-.transfer-button--secondary:hover:not(:disabled) {
+.process-redemption-button-secondary:hover:not(:disabled) {
   background: #f3f4f6;
 }
 
-.transfer-button:disabled {
+.process-redemption-button-primary:disabled,
+.process-redemption-button-secondary:disabled {
   opacity: 0.6;
   cursor: default;
   box-shadow: none;
 }
 
-.transfer-qr {
+/* Details panel */
+
+.process-redemption-details {
   margin-top: 1.5rem;
-  padding: 1rem 1.25rem;
-  border-radius: 12px;
-  background: #f8fafc;
+  padding: 1rem 1.1rem;
+  border-radius: 10px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
 }
 
-.transfer-qr__code {
-  margin: 0.75rem 0;
-  display: flex;
-  justify-content: center;
+.process-redemption-details-title {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.process-redemption-detail-row {
+  font-size: 0.92rem;
+  margin: 0.15rem 0;
+  color: #111827;
+}
+
+.process-redemption-detail-label {
+  font-weight: 600;
+  color: #4b5563;
+}
+
+/* Loading text */
+
+.process-redemption-loading {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
 }
 
 /* Responsive */
+
 @media (max-width: 768px) {
-  .transfer-page {
+  .process-redemption-page {
     padding: 2rem 1rem;
   }
 
-  .transfer-card {
+  .process-redemption-card {
     padding: 1.75rem 1.5rem 2rem;
     box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
   }
 
-  .transfer-title {
+  .process-redemption-title {
     font-size: 1.6rem;
-  }
-
-  .transfer-lookup-row {
-    flex-direction: column;
-    align-items: stretch;
   }
 }

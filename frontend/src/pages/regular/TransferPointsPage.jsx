@@ -6,6 +6,7 @@ import { searchUsersByUtorid } from '../../api/usersApi';
 import { useAuth } from '../../hooks/useAuth';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import Loader from '../../components/common/Loader';
+import { QRCodeSVG } from 'qrcode.react';
 
 import './TransferPointsPage.css';
 
@@ -20,6 +21,14 @@ const TransferPointsPage = () => {
   const [recipientInfo, setRecipientInfo] = useState(null);
 
   const { user } = useAuth();
+
+  const qrValue = user
+  ? JSON.stringify({
+      type: 'transfer',
+      utorid: user.utorid,
+    })
+  : '';
+
   const navigate = useNavigate();
 
   const handleLookup = async () => {
@@ -118,6 +127,21 @@ const TransferPointsPage = () => {
           </span>
         </p>
 
+        {user && qrValue && (
+        <section className="transfer-qr">
+          <h2 className="transfer-qr__title">Receive via QR code</h2>
+          <p className="transfer-qr__subtitle">
+            Ask another user to scan this code to start a transfer to you.
+          </p>
+          <div className="transfer-qr__code">
+            <QRCodeSVG value={qrValue} size={140} includeMargin />
+          </div>
+          <p className="transfer-qr__meta">
+            Encoded UTORid: <strong>{user.utorid}</strong>
+          </p>
+        </section>
+      )}
+      
         {error && (
           <div className="transfer-alert transfer-alert--error">
             <ErrorMessage message={error} />

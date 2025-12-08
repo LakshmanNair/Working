@@ -31,6 +31,12 @@ export async function fetchManagerEvents(params = {}) {
   return res.data;
 }
 
+// POST /events
+export async function createEvent(payload) {
+  const res = await api.post('/events', payload);
+  return res.data;
+}
+
 //PATCH /events/:eventId
 export async function updateEvent(eventId, payload) {
   const res = await api.patch(`/events/${eventId}`, payload); // uses updateEvent controller [attached_file:13]

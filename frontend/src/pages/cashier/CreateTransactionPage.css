@@ -1,7 +1,8 @@
-/* TransferPointsPage.css */
+/* CreateTransactionPage.css */
 
-/* Page container, same shell as RedemptionRequestPage */
-.transfer-page {
+/* Page shell, matches other manager pages */
+
+.create-transaction-page {
   min-height: calc(100vh - 64px);
   padding: 3rem 1.5rem;
   background: #f4f5f7;
@@ -11,9 +12,10 @@
 }
 
 /* Main card */
-.transfer-card {
+
+.create-transaction-card {
   width: 100%;
-  max-width: 1100px; /* match redemption/users width */
+  max-width: 1100px;
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
@@ -24,7 +26,8 @@
 }
 
 /* Header */
-.transfer-title {
+
+.create-transaction-title {
   margin: 0 0 0.35rem;
   font-size: 2rem;
   font-weight: 700;
@@ -32,71 +35,56 @@
   color: #111827;
 }
 
-.transfer-subtitle {
+.create-transaction-subtitle {
   margin: 0 0 1.5rem;
   font-size: 0.95rem;
   color: #4b5563;
 }
 
-.transfer-balance-strong {
-  font-weight: 600;
-  color: #111827;
-}
-
 /* Alerts */
-.transfer-alert {
+
+.create-transaction-alert {
   padding: 0.75rem 1rem;
   border-radius: 8px;
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
 
-.transfer-alert--error {
+.create-transaction-alert--error {
   background: #fef2f2;
   color: #b91c1c;
   border: 1px solid #fecaca;
 }
 
-.transfer-alert--success {
+.create-transaction-alert--success {
   background: #ecfdf3;
   color: #166534;
   border: 1px solid #bbf7d0;
 }
 
 /* Form */
-.transfer-form {
+
+.create-transaction-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.transfer-form-field {
+.create-transaction-field {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
 }
 
-.transfer-form-field label {
+.create-transaction-field label {
   font-size: 0.9rem;
   font-weight: 500;
   color: #374151;
 }
 
-/* Recipient lookup row */
-.transfer-lookup-row {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.transfer-lookup-row input {
-  flex: 1 1 220px;
-}
-
-/* Inputs */
-.transfer-form-field input,
-.transfer-form-field textarea {
+.create-transaction-field input,
+.create-transaction-field textarea,
+.create-transaction-field select {
   border-radius: 8px;
   border: 1px solid #d1d5db;
   padding: 0.6rem 0.75rem;
@@ -107,36 +95,57 @@
     background-color 0.15s ease;
 }
 
-.transfer-form-field textarea {
-  min-height: 140px;
+.create-transaction-field textarea {
+  min-height: 120px;
   resize: vertical;
 }
 
-.transfer-form-field input:focus,
-.transfer-form-field textarea:focus {
+.create-transaction-field input:focus,
+.create-transaction-field textarea:focus,
+.create-transaction-field select:focus {
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.35);
   background: #f9fafb;
 }
 
-/* Recipient info text */
-.transfer-recipient-info {
-  margin: 0.15rem 0 0;
-  font-size: 0.88rem;
-  color: #4b5563;
+/* Promotions list */
+
+.create-transaction-promotions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.create-transaction-promotion-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #111827;
+}
+
+.create-transaction-promotion-item input[type='checkbox'] {
+  margin-top: 0.15rem;
 }
 
 /* Actions */
-.transfer-actions {
+
+.create-transaction-actions {
   margin-top: 1.5rem;
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
 }
 
-/* Buttons */
-.transfer-button {
+.create-transaction-submit-button,
+.create-transaction-secondary-button {
   border-radius: 999px;
   padding: 0.6rem 1.6rem;
   font-size: 0.95rem;
@@ -147,63 +156,49 @@
     color 0.15s ease, transform 0.04s ease;
 }
 
-.transfer-button--primary {
+.create-transaction-submit-button {
   background: #2563eb;
   color: #ffffff;
   border-color: #2563eb;
 }
 
-.transfer-button--primary:hover:not(:disabled) {
+.create-transaction-submit-button:hover:not(:disabled) {
   background: #1d4ed8;
   box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
 }
 
-.transfer-button--secondary {
+.create-transaction-secondary-button {
   background: #ffffff;
   color: #374151;
   border-color: #d1d5db;
 }
 
-.transfer-button--secondary:hover:not(:disabled) {
+.create-transaction-secondary-button:hover:not(:disabled) {
   background: #f3f4f6;
 }
 
-.transfer-button:disabled {
+/* Disabled actions */
+
+.create-transaction-submit-button:disabled,
+.create-transaction-secondary-button:disabled {
   opacity: 0.6;
   cursor: default;
   box-shadow: none;
 }
 
-.transfer-qr {
-  margin-top: 1.5rem;
-  padding: 1rem 1.25rem;
-  border-radius: 12px;
-  background: #f8fafc;
-}
-
-.transfer-qr__code {
-  margin: 0.75rem 0;
-  display: flex;
-  justify-content: center;
-}
-
 /* Responsive */
+
 @media (max-width: 768px) {
-  .transfer-page {
+  .create-transaction-page {
     padding: 2rem 1rem;
   }
 
-  .transfer-card {
+  .create-transaction-card {
     padding: 1.75rem 1.5rem 2rem;
     box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
   }
 
-  .transfer-title {
+  .create-transaction-title {
     font-size: 1.6rem;
-  }
-
-  .transfer-lookup-row {
-    flex-direction: column;
-    align-items: stretch;
   }
 }

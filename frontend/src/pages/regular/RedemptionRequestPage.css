@@ -165,6 +165,38 @@
   color: #111827;
 }
 
+.redemption-qr {
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  background: #f9fafb;
+}
+
+.redemption-qr__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.redemption-qr__subtitle {
+  margin: 0.25rem 0 0.75rem;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.redemption-qr__code {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.redemption-qr__meta {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .redemption-page {

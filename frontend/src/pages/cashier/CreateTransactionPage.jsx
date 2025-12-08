@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPurchase } from '../../api/transactionsApi';
 import { listPromotions } from '../../api/promotionsApi';
 import ErrorMessage from '../../components/common/ErrorMessage';
-import '../../App.css'; 
+import './CreateTransactionPage.css';
 
 const CreateTransactionPage = () => {
   // Cashiers only create purchases
@@ -86,123 +86,115 @@ const CreateTransactionPage = () => {
     }
   };
 
-  return (
-    <div className="page-container">
-      <div className="page-header">
-        <h1>New Purchase</h1>
-        <p style={{ color: '#6c757d', marginTop: '0.5rem' }}>
-          Record a customer purchase to award points.
-        </p>
-      </div>
+return (
+  <div className="create-transaction-page">
+    <div className="create-transaction-card">
+      <h1 className="create-transaction-title">Create Transaction</h1>
+      <p className="create-transaction-subtitle">
+        Record a customer purchase to award points.
+      </p>
 
-      {error && <ErrorMessage message={error} onDismiss={() => setError('')} />}
-      
+      {error && (
+        <div className="create-transaction-alert create-transaction-alert--error">
+          <ErrorMessage message={error} onDismiss={() => setError('')} />
+        </div>
+      )}
+
       {success && (
-        <div className="info-box" style={{ backgroundColor: '#d4edda', borderColor: '#c3e6cb' }}>
-          <div className="info-box-title" style={{ color: '#155724' }}>Success</div>
+        <div className="create-transaction-alert create-transaction-alert--success">
           {success}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="form-card">
-        <div className="form-section">
-          <div className="form-row">
-            <div className="form-group">
-              <label className="field-label">Customer UTORid <span className="required">*</span></label>
-              <input
-                type="text"
-                value={utorid}
-                onChange={(e) => setUtorid(e.target.value)}
-                required
-                className="input-field"
-                placeholder="e.g. smithj"
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="field-label">Amount Spent ($) <span className="required">*</span></label>
-              <input
-                type="number"
-                step="0.01"
-                value={spent}
-                onChange={(e) => setSpent(e.target.value)}
-                required
-                min="0.01"
-                className="input-field"
-                placeholder="0.00"
-              />
-            </div>
-          </div>
+      <form className="create-transaction-form" onSubmit={handleSubmit}>
+        <div className="create-transaction-field">
+          <label htmlFor="utorid">Customer UTORid</label>
+          <input
+            id="utorid"
+            type="text"
+            value={utorid}
+            onChange={(e) => setUtorid(e.target.value)}
+            disabled={loading}
+            required
+          />
         </div>
 
-        <div className="form-section">
-          <label className="field-label">Apply Promotions</label>
-          <div className="field-help" style={{ marginBottom: '1rem' }}>
-            Select any active promotions that apply to this purchase.
-          </div>
-          
+        <div className="create-transaction-field">
+          <label htmlFor="spent">Amount spent ($)</label>
+          <input
+            id="spent"
+            type="number"
+            min="0.01"
+            step="0.01"
+            value={spent}
+            onChange={(e) => setSpent(e.target.value)}
+            disabled={loading}
+            required
+          />
+        </div>
+
+        <div className="create-transaction-field">
+          <label>Apply promotions (optional)</label>
           {promoLoading ? (
-            <div style={{ padding: '1rem', textAlign: 'center', color: '#666' }}>Loading promotions...</div>
-          ) : promotions.length > 0 ? (
-            <div className="promotions-grid">
-              {promotions.map((promo) => {
-                const isSelected = promotionIds.includes(promo.id);
-                return (
-                  <div 
-                    key={promo.id} 
-                    className={`promo-checkbox-card ${isSelected ? 'selected' : ''}`}
-                    onClick={() => togglePromotion(promo.id)}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      onChange={() => {}} 
-                      style={{ cursor: 'pointer', width: '18px', height: '18px', marginTop: '3px' }}
-                    />
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ fontWeight: '600', fontSize: '0.9rem', color: '#333' }}>{promo.name}</span>
-                      {promo.minSpending && (
-                        <span style={{ fontSize: '0.75rem', color: '#666' }}>
-                          Min Spend: ${promo.minSpending}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <span>Loading promotions…</span>
+          ) : promotions.length === 0 ? (
+            <span>No active promotions available.</span>
           ) : (
-            <div className="info-box">No active promotions available at this time.</div>
+            <div className="create-transaction-promotions">
+              {promotions.map((promo) => (
+                <label
+                  key={promo.id}
+                  className="create-transaction-promotion-item"
+                >
+                  <input
+                    type="checkbox"
+                    checked={promotionIds.includes(promo.id)}
+                    onChange={() => togglePromotion(promo.id)}
+                    disabled={loading}
+                  />
+                  <span>
+                    <strong>{promo.name}</strong> –{' '}
+                    {promo.points
+                      ? `${promo.points} points`
+                      : `${promo.rate}% back`}
+                  </span>
+                </label>
+              ))}
+            </div>
           )}
         </div>
 
-        <div className="form-section">
-          <div className="form-group">
-            <label className="field-label">Remarks (Optional)</label>
-            <textarea
-              value={remark}
-              onChange={(e) => setRemark(e.target.value)}
-              className="textarea-field"
-              placeholder="Add internal notes..."
-              rows="2"
-              style={{ minHeight: '80px' }}
-            />
-          </div>
+        <div className="create-transaction-field">
+          <label htmlFor="remark">Remark (optional)</label>
+          <textarea
+            id="remark"
+            value={remark}
+            onChange={(e) => setRemark(e.target.value)}
+            disabled={loading}
+          />
         </div>
 
-        <div className="form-actions">
+        <div className="create-transaction-actions">
           <button
             type="submit"
+            className="create-transaction-submit-button"
             disabled={loading}
-            className="btn btn-primary"
-            style={{ minWidth: '200px' }}
           >
-            {loading ? 'Processing...' : 'Complete Purchase'}
+            {loading ? 'Creating…' : 'Create Transaction'}
+          </button>
+          <button
+            type="button"
+            className="create-transaction-secondary-button"
+            onClick={() => navigate(-1)}
+            disabled={loading}
+          >
+            Cancel
           </button>
         </div>
       </form>
     </div>
-  );
+  </div>
+);
 };
 
 export default CreateTransactionPage;

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { createRedemption } from '../../api/transactionsApi';
 import { useAuth } from '../../hooks/useAuth';
 import ErrorMessage from '../../components/common/ErrorMessage';
+import { QRCodeSVG } from 'qrcode.react';
 
 import './RedemptionRequestPage.css';
 
@@ -16,6 +17,13 @@ const RedemptionRequestPage = () => {
 
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  const qrValue = transactionId
+  ? JSON.stringify({
+      type: 'redemption',
+      transactionId,
+    })
+  : '';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,6 +77,24 @@ const RedemptionRequestPage = () => {
             Your current balance:{' '}
             <strong>{user?.points || 0} points</strong>
           </p>
+
+          {qrValue && (
+          <section className="redemption-qr">
+            <h2 className="redemption-qr__title">
+              Show this code to be redeemed
+            </h2>
+            <p className="redemption-qr__subtitle">
+              A manager can scan this QR code to look up and process your
+              pending redemption request.
+            </p>
+            <div className="redemption-qr__code">
+              <QRCodeSVG value={qrValue} size={160} includeMargin />
+            </div>
+            <p className="redemption-qr__meta">
+              Request ID: <strong>{transactionId}</strong>
+            </p>
+          </section>
+        )}
 
           <div className="redemption-actions">
             <button
