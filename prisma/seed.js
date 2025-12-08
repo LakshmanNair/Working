@@ -1,5 +1,5 @@
 /*
- * Seed script for CSSU Rewards System
+ * Seed script for True Blue Rewards System
  * Populates Users, Events, Promotions, and Transactions.
  * Satisfies the "Pre-populated Database" requirement.
  */

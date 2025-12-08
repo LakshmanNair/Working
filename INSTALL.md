@@ -1,6 +1,6 @@
-# CSSU Rewards System - Installation Guide
+# True Blue Rewards System - Installation Guide
 
-This document provides step-by-step instructions for setting up and running the CSSU Rewards System locally and deploying it to production.
+This document provides step-by-step instructions for setting up and running the True Blue Rewards System locally and deploying it to production.
 
 ---
 
@@ -58,8 +58,6 @@ DATABASE_URL=file:./prisma/dev.db
 FRONTEND_ORIGIN=http://localhost:5173
 PORT=3001
 ```
-
-**Important**: Replace `your-super-secret-jwt-key-change-this-in-production` with a strong, random secret key.
 
 ### 4. Set Up Database
 
@@ -230,26 +228,24 @@ Open your browser and navigate to:
 
 ## Demo Credentials
 
-**Note**: These credentials should be created by your partner's user seeding script. If they don't exist, create them using the backend API or Prisma Studio.
-
 ### Regular User
 - UTORid: `student1`
-- Password: (set by your partner)
+- Password: Password123!
 - Role: `regular`
 
 ### Cashier
 - UTORid: `cashier1`
-- Password: (set by your partner)
+- Password: Password123!
 - Role: `cashier`
 
 ### Manager
 - UTORid: `manager1`
-- Password: (set by your partner)
+- Password: Password123!
 - Role: `manager`
 
 ### Superuser
-- UTORid: `admin`
-- Password: (set by your partner)
+- UTORid: `superus2`
+- Password: Password123!
 - Role: `superuser`
 
 **To create users**, use the backend API endpoint:
@@ -314,13 +310,3 @@ This project was developed with assistance from AI tools (ChatGPT/Claude) for:
 - **Debugging**: Identifying and fixing syntax errors, type mismatches, and logical issues
 - **Documentation**: Generating installation instructions and code comments
 - **Architecture decisions**: Consulting on project structure and best practices
-
-**Human contributions:**
-- Project requirements analysis and planning
-- Integration of AI-generated code into the full system
-- Testing and validation of functionality
-- Custom business logic implementation
-- UI/UX design decisions
-- Deployment configuration
-
-All code has been reviewed, tested, and customized to meet the specific requirements of the CSC309 project.

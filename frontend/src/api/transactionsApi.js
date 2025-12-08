@@ -34,7 +34,13 @@ export const processRedemption = async (transactionId) => {
 
 // List my transactions (regular user)
 export const listMyTransactions = async (params = {}) => {
-  const response = await api.get('/users/me/transactions', { params });
+  // Logic to remove undefined, null, or empty string values
+  // This ensures the backend doesn't try to parse empty inputs as numbers
+  const validParams = Object.fromEntries(
+    Object.entries(params).filter(([_, v]) => v !== undefined && v !== null && v !== '')
+  );
+
+  const response = await api.get('/users/me/transactions', { params: validParams });
   return response.data;
 };
 

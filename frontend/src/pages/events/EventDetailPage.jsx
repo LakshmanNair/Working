@@ -109,7 +109,7 @@ export default function EventDetailPage() {
         <header className="event-detail-header">
           <h1 className="event-detail-title">{event.name}</h1>
           <p className="event-detail-subtitle">
-            Kick-off event for CSSU Rewards.
+            Kick-off event for True Blue Rewards.
           </p>
         </header>
 

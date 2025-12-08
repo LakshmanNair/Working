@@ -1,4 +1,4 @@
-# CSSU Rewards System - Testing Outline
+# True Blue Rewards System - Testing Outline
 
 This document provides a comprehensive testing checklist to ensure all functionality works correctly before submission.
 

@@ -12,23 +12,20 @@ import MyTransactionsPage from './pages/regular/MyTransactionsPage';
 import TransferPointsPage from './pages/regular/TransferPointsPage';
 import RedemptionRequestPage from './pages/regular/RedemptionRequestPage';
 import RedemptionQRCodePage from './pages/regular/RedemptionQRCodePage';
-import PromotionsPage from './pages/regular/PromotionsPage'; // Public view
 
 // Cashier pages
 import CreateTransactionPage from './pages/cashier/CreateTransactionPage';
-import ProcessRedemptionPage from './pages/cashier/ProcessRedemptionPage'; // Fixed import
+import ProcessRedemptionPage from './pages/cashier/ProcessRedemptionPage';
 
 // Manager pages
 import ManagerDashboardPage from './pages/manager/ManagerDashboardPage';
 import TransactionsListPage from './pages/manager/TransactionsListPage';
-import TransactionDetailPage from './pages/manager/TransactionDetailPage'; // Fixed import
 import PromotionsListPage from './pages/manager/PromotionsListPage';
-import PromotionCreateEditPage from './pages/manager/PromotionCreateEditPage';
 import UsersListPage from './pages/manager/UsersListPage';
 import UserDetailPage from './pages/manager/UserDetailPage';
 import ManagerEventsListPage from './pages/manager/ManagerEventsListPage';
 import ManagerEventDetailPage from './pages/manager/ManagerEventDetailPage';
-import ManagerEventCreatePage from './pages/manager/ManagerEventCreatePage';
+
 // Profile pages
 import ProfilePage from './pages/profile/ProfilePage';
 
@@ -39,6 +36,13 @@ import EventDetailPage from './pages/events/EventDetailPage';
 // Organizer pages
 import MyEventsPage from './pages/organizer/MyEventsPage';
 import EventAwardPointsPage from './pages/organizer/EventAwardPointsPage';
+
+// Promotion pages
+import PromotionCreateEditPage from './pages/manager/PromotionCreateEditPage';
+import PromotionsPage from './pages/regular/PromotionsPage';
+
+// Placeholder for other pages
+const TransactionDetailPage = () => <div>Transaction Detail</div>;
 
 // Layout Component to handle Navbar visibility
 const Layout = ({ children }) => {
@@ -52,6 +56,21 @@ const Layout = ({ children }) => {
       {children}
     </div>
   );
+};
+
+// --- NEW COMPONENT: Smart Redirect based on Role ---
+const RoleBasedRedirect = () => {
+  const { user } = useAuth();
+  const role = user?.role;
+
+  if (role === 'cashier') {
+    return <Navigate to="/cashier/transactions/new" replace />;
+  }
+  if (role === 'manager' || role === 'superuser') {
+    return <Navigate to="/manager/dashboard" replace />;
+  }
+  // Default for regular users
+  return <Navigate to="/me/transactions" replace />;
 };
 
 const AppRoutes = () => {
@@ -108,7 +127,7 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/me/events"
+        path="/events"
         element={
           <RequireAuth>
             <EventsListPage />
@@ -116,23 +135,7 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/me/myevents"
-        element={
-          <RequireAuth>
-            <MyEventsPage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/organizer/events/:eventId"
-        element={
-          <RequireAuth>
-            <EventAwardPointsPage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/me/events/:eventId"
+        path="/events/:eventId"
         element={
           <RequireAuth>
             <EventDetailPage />
@@ -232,17 +235,9 @@ const AppRoutes = () => {
         }
       />
       <Route
-      path="/manager/events/new"
-      element={
-        <RequireAuth requiredRole="manager">
-          <ManagerEventCreatePage />
-        </RequireAuth>
-      }
-      />
-      <Route
         path="/manager/events/:eventId"
         element={
-          <RequireAuth>
+          <RequireAuth requiredRole="manager">
             <ManagerEventDetailPage />
           </RequireAuth>
         }
@@ -252,16 +247,16 @@ const AppRoutes = () => {
       <Route
         path="/organizer/events"
         element={
-          <RequireAuth>
+          <RequireAuth requiredRole="manager">
             <MyEventsPage />
           </RequireAuth>
         }
       />
       <Route
-        path="/organizer/events/:eventId"
+        path="/organizer/events/:eventId/award"
         element={
-          <RequireAuth>
-            <EventAwardPointsPage/>
+          <RequireAuth requiredRole="manager">
+            <EventAwardPointsPage />
           </RequireAuth>
         }
       />
@@ -276,12 +271,12 @@ const AppRoutes = () => {
         }
       />
       
-      {/* Default redirect */}
+      {/* Default redirect - UPDATED TO USE RoleBasedRedirect */}
       <Route
         path="/"
         element={
           <RequireAuth>
-            <Navigate to="/me/transactions" replace />
+            <RoleBasedRedirect />
           </RequireAuth>
         }
       />

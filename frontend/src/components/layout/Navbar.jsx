@@ -15,7 +15,7 @@ const Navbar = () => {
       <nav style={{ padding: '1rem', backgroundColor: '#f8f9fa', borderBottom: '1px solid #ddd' }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Link to="/" style={{ textDecoration: 'none', color: '#333', fontWeight: 'bold' }}>
-            CSSU Rewards
+           TrueBlue Rewards
           </Link>
           <Link to="/login" style={{ textDecoration: 'none', color: '#007bff' }}>
             Login
@@ -32,13 +32,12 @@ const Navbar = () => {
       <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
           <Link to="/" style={{ textDecoration: 'none', color: '#333', fontWeight: 'bold' }}>
-            CSSU Rewards
+           TrueBlue Rewards
           </Link>
           
           {role === 'regular' && (
             <>
               <Link to="/me/transactions" style={{ textDecoration: 'none', color: '#333' }}>My Transactions</Link>
-              <Link to="/me/transfer" style={{ textDecoration: 'none', color: '#333' }}>Transfer Points</Link>
               <Link to="/me/events" style={{ textDecoration: 'none', color: '#333' }}>Events</Link>
               <Link to="/organizer/events" style={{ textDecoration: 'none', color: '#333' }}>My Events</Link>
               <Link to="/me/redemption" style={{ textDecoration: 'none', color: '#333' }}>Redemption</Link>
